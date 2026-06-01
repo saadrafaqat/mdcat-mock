@@ -663,7 +663,113 @@ window.MCQ_DATA.english = [
     { text: "The prefix 'pre-' in 'preview' means:", options: ["Before", "After", "During", "Beyond"], answer: 0 },
     { text: "Which sentence is in the present perfect tense?", options: ["She has eaten.", "She eats.", "She ate.", "She will eat."], answer: 0 },
     { text: "The word 'Eloquent' means:", options: ["Fluent and persuasive", "Poorly spoken", "Silent", "Confused"], answer: 0 },
-    { text: "Identify the conjunction in: 'I will go if you come.'", options: ["If", "I", "Will", "Go"], answer: 0 }
+    { text: "Identify the conjunction in: 'I will go if you come.'", options: ["If", "I", "Will", "Go"], answer: 0 },
+    { text: "Synonym of 'Abysmal':", options: ["Terrible", "Excellent", "Shallow", "Bright"], answer: 0 },
+    { text: "Antonym of 'Frivolous':", options: ["Serious", "Silly", "Trivial", "Playful"], answer: 0 },
+    { text: "Synonym of 'Ubiquitous':", options: ["Omnipresent", "Rare", "Absent", "Scarce"], answer: 0 },
+    { text: "Antonym of 'Plausible':", options: ["Implausible", "Believable", "Credible", "Reasonable"], answer: 0 },
+    { text: "Synonym of 'Tenacious':", options: ["Persistent", "Weak", "Yielding", "Flexible"], answer: 0 },
+    { text: "Antonym of 'Candid':", options: ["Dishonest", "Frank", "Open", "Sincere"], answer: 0 },
+    { text: "Synonym of 'Meticulous':", options: ["Careful", "Careless", "Sloppy", "Hasty"], answer: 0 },
+    { text: "Antonym of 'Jubilant':", options: ["Miserable", "Joyful", "Elated", "Thrilled"], answer: 0 },
+    { text: "Synonym of 'Prudent':", options: ["Wise", "Foolish", "Reckless", "Hasty"], answer: 0 },
+    { text: "Antonym of 'Ample':", options: ["Scarce", "Plentiful", "Abundant", "Sufficient"], answer: 0 },
+
+    // Grammar - Tenses
+    { text: "'She ___ to school every day.' (Correct tense)", options: ["Goes", "Go", "Going", "Gone"], answer: 0 },
+    { text: "'They ___ dinner when I arrived.'", options: ["Were having", "Have", "Are having", "Had having"], answer: 0 },
+    { text: "'By next year, I ___ my degree.'", options: ["Will have completed", "Complete", "Completed", "Am completing"], answer: 0 },
+    { text: "'He ___ since morning.'", options: ["Has been sleeping", "Is sleeping", "Sleeps", "Slept"], answer: 0 },
+    { text: "'The book ___ on the table.' (Correct form)", options: ["Is", "Are", "Were", "Be"], answer: 0 },
+    { text: "'I ___ him yesterday.'", options: ["Saw", "See", "Have seen", "Had seen"], answer: 0 },
+    { text: "'She ___ English for five years.'", options: ["Has been learning", "Is learning", "Learns", "Learned"], answer: 0 },
+    { text: "'They ___ to the park when it started raining.'", options: ["Were going", "Go", "Have gone", "Had gone"], answer: 0 },
+    { text: "'He ___ his homework before dinner.'", options: ["Had finished", "Finishes", "Has finished", "Is finishing"], answer: 0 },
+    { text: "'We ___ this movie twice already.'", options: ["Have seen", "Saw", "See", "Are seeing"], answer: 0 },
+
+    // Grammar - Articles
+    { text: "'___ sun rises in the east.' (Correct article)", options: ["The", "A", "An", "No article"], answer: 0 },
+    { text: "'She is ___ honest person.'", options: ["An", "A", "The", "No article"], answer: 0 },
+    { text: "'He is ___ university student.'", options: ["A", "An", "The", "No article"], answer: 0 },
+    { text: "'___ Himalayas are beautiful.'", options: ["The", "A", "An", "No article"], answer: 0 },
+    { text: "'She plays ___ piano.'", options: ["The", "A", "An", "No article"], answer: 0 },
+    { text: "'He gave me ___ one-rupee note.'", options: ["A", "An", "The", "No article"], answer: 0 },
+    { text: "'___ honesty is the best policy.'", options: ["No article", "The", "A", "An"], answer: 0 },
+    { text: "'She bought ___ umbrella.'", options: ["An", "A", "The", "No article"], answer: 0 },
+    { text: "'___ Nile is the longest river.'", options: ["The", "A", "An", "No article"], answer: 0 },
+    { text: "'He is ___ MLA.'", options: ["An", "A", "The", "No article"], answer: 0 },
+
+    // Grammar - Prepositions
+    { text: "'She is afraid ___ dogs.'", options: ["Of", "From", "To", "At"], answer: 0 },
+    { text: "'He died ___ cancer.'", options: ["Of", "From", "By", "With"], answer: 0 },
+    { text: "'She is good ___ painting.'", options: ["At", "In", "On", "With"], answer: 0 },
+    { text: "'He was deprived ___ his rights.'", options: ["Of", "From", "By", "Off"], answer: 0 },
+    { text: "'She insisted ___ coming with us.'", options: ["On", "In", "At", "For"], answer: 0 },
+    { text: "'He is married ___ a doctor.'", options: ["To", "With", "By", "Of"], answer: 0 },
+    { text: "'She was angry ___ me.'", options: ["With", "At", "On", "To"], answer: 0 },
+    { text: "'He jumped ___ the river.'", options: ["Into", "In", "On", "At"], answer: 0 },
+    { text: "'She has been waiting ___ morning.'", options: ["Since", "For", "From", "By"], answer: 0 },
+    { text: "'He will return ___ an hour.'", options: ["In", "After", "Since", "For"], answer: 0 },
+
+    // Grammar - Conjunctions
+    { text: "'She is rich ___ unhappy.' (Choose correct conjunction)", options: ["But", "And", "Or", "So"], answer: 0 },
+    { text: "'He will come ___ you invite him.'", options: ["If", "But", "And", "Or"], answer: 0 },
+    { text: "'She worked hard ___ she could pass.'", options: ["So that", "Because", "Although", "Unless"], answer: 0 },
+    { text: "'___ he was tired, he continued working.'", options: ["Although", "Because", "Since", "As"], answer: 0 },
+    { text: "'I will wait ___ you return.'", options: ["Until", "Because", "Since", "As"], answer: 0 },
+    { text: "'She is ___ intelligent ___ hardworking.'", options: ["Both...and", "Either...or", "Neither...nor", "Not only...but also"], answer: 0 },
+    { text: "'___ you study, you will fail.'", options: ["Unless", "If", "Because", "Since"], answer: 0 },
+    { text: "'He is poor ___ honest.'", options: ["But", "And", "Or", "So"], answer: 0 },
+    { text: "'She speaks ___ English ___ French.'", options: ["Both...and", "Either...or", "Neither...nor", "Not only...but also"], answer: 0 },
+    { text: "'He ran fast ___ he missed the bus.'", options: ["Yet", "And", "So", "Because"], answer: 0 },
+
+    // Error Detection
+    { text: "Identify the error: 'He don't know the answer.'", options: ["Subject-verb agreement", "Spelling", "Punctuation", "Capitalization"], answer: 0 },
+    { text: "Identify the error: 'She is more taller than him.'", options: ["Double comparative", "Spelling", "Punctuation", "Wrong pronoun"], answer: 0 },
+    { text: "Identify the error: 'The committee have decided the matter.'", options: ["Subject-verb agreement", "Tense", "Article", "Preposition"], answer: 0 },
+    { text: "Identify the error: 'Neither of the boys are coming.'", options: ["Subject-verb agreement", "Spelling", "Punctuation", "Capitalization"], answer: 0 },
+    { text: "Identify the error: 'She told to me the story.'", options: ["Extra preposition", "Wrong tense", "Wrong article", "Wrong pronoun"], answer: 0 },
+    { text: "Identify the error: 'I prefer coffee than tea.'", options: ["Wrong conjunction", "Wrong preposition", "Wrong tense", "Wrong article"], answer: 0 },
+    { text: "Identify the error: 'He was hung for murder.'", options: ["Wrong verb form", "Wrong tense", "Wrong preposition", "Wrong article"], answer: 0 },
+    { text: "Identify the error: 'She has been ill since two days.'", options: ["Wrong preposition", "Wrong tense", "Wrong article", "Wrong conjunction"], answer: 0 },
+    { text: "Identify the error: 'The sceneries here are beautiful.'", options: ["Wrong noun form", "Wrong verb", "Wrong adjective", "Wrong adverb"], answer: 0 },
+    { text: "Identify the error: 'He is one of the best student.'", options: ["Wrong noun form (should be students)", "Wrong adjective", "Wrong article", "Wrong verb"], answer: 0 },
+
+    // Sentence Improvement
+    { text: "Improve: 'He came lately to school today.'", options: ["Late", "Later", "Latest", "Latelier"], answer: 0 },
+    { text: "Improve: 'She is very much happy.'", options: ["Very happy", "Much happy", "Very much happier", "Much happier"], answer: 0 },
+    { text: "Improve: 'I will do it myselfself.'", options: ["Myself", "Meself", "My self", "I self"], answer: 0 },
+    { text: "Improve: 'He is senior than me.'", options: ["Senior to", "Senior from", "Senior of", "Senior over"], answer: 0 },
+    { text: "Improve: 'I have visited the USA last year.'", options: ["Visited", "Had visited", "Was visiting", "Have been visiting"], answer: 0 },
+    { text: "Improve: 'She talks as if she is the boss.'", options: ["Were", "Was", "Has been", "Is being"], answer: 0 },
+    { text: "Improve: 'He is enough old to marry.'", options: ["Old enough", "Enough older", "Old enoughly", "So old"], answer: 0 },
+    { text: "Improve: 'She not only lost her purse but also her keys.'", options: ["Lost not only her purse but also her keys", "Not only lost her purse but also lost her keys", "Lost her purse not only but also her keys", "No improvement needed"], answer: 0 },
+    { text: "Improve: 'He asked that where I was going.'", options: ["Asked where I was going", "Asked that where I am going", "Asked that where was I going", "No improvement"], answer: 0 },
+    { text: "Improve: 'The reason why he failed is because he didn't study.'", options: ["Reason he failed is that he didn't study", "Reason why he failed is that he didn't study", "Reason why he failed is because he didn't study", "No improvement needed"], answer: 0 },
+
+    // Reading Comprehension - Short Passages
+    { text: "'The hurrieder I go, the behinder I get.' This is an example of:", options: ["Malapropism", "Alliteration", "Simile", "Metaphor"], answer: 0 },
+    { text: "In 'All the world's a stage', the literary device used is:", options: ["Metaphor", "Simile", "Personification", "Hyperbole"], answer: 0 },
+    { text: "'He is as brave as a lion' is an example of:", options: ["Simile", "Metaphor", "Personification", "Alliteration"], answer: 0 },
+    { text: "'Peter Piper picked a peck of pickled peppers' uses:", options: ["Alliteration", "Assonance", "Consonance", "Onomatopoeia"], answer: 0 },
+    { text: "'Buzz', 'hiss', 'bang' are examples of:", options: ["Onomatopoeia", "Alliteration", "Simile", "Metaphor"], answer: 0 },
+    { text: "'The wind whispered through the trees' is:", options: ["Personification", "Simile", "Metaphor", "Hyperbole"], answer: 0 },
+    { text: "'I've told you a million times' is:", options: ["Hyperbole", "Simile", "Metaphor", "Personification"], answer: 0 },
+    { text: "In 'O, Romeo, Romeo, wherefore art thou Romeo?' the device is:", options: ["Apostrophe", "Alliteration", "Simile", "Metaphor"], answer: 0 },
+    { text: "'The pen is mightier than the sword' uses:", options: ["Metonymy", "Simile", "Personification", "Hyperbole"], answer: 0 },
+    { text: "'It was the best of times, it was the worst of times' is:", options: ["Antithesis", "Parallelism", "Oxymoron", "Paradox"], answer: 0 },
+
+    // Vocabulary in Context
+    { text: "'The teacher was lenient with the students.' Lenient means:", options: ["Merciful", "Strict", "Harsh", "Cruel"], answer: 0 },
+    { text: "'He gave a cryptic response.' Cryptic means:", options: ["Mysterious", "Clear", "Simple", "Direct"], answer: 0 },
+    { text: "'She was ecstatic about the news.' Ecstatic means:", options: ["Overjoyed", "Sad", "Angry", "Worried"], answer: 0 },
+    { text: "'His argument was cogent.' Cogent means:", options: ["Convincing", "Weak", "Confusing", "Illogical"], answer: 0 },
+    { text: "'The plan was feasible.' Feasible means:", options: ["Possible", "Impossible", "Difficult", "Expensive"], answer: 0 },
+    { text: "'She gave a cursory glance.' Cursory means:", options: ["Quick and superficial", "Detailed", "Thorough", "Careful"], answer: 0 },
+    { text: "'His speech was verbose.' Verbose means:", options: ["Wordy", "Concise", "Short", "Meaningful"], answer: 0 },
+    { text: "'The aroma was tantalizing.' Tantalizing means:", options: ["Tempting", "Repulsive", "Unpleasant", "Boring"], answer: 0 },
+    { text: "'He was known for his magnanimity.' Magnanimity means:", options: ["Generosity", "Stinginess", "Cruelty", "Selfishness"], answer: 0 },
+    { text: "'The view was breathtaking.' Breathtaking means:", options: ["Stunningly beautiful", "Boring", "Ugly", "Ordinary"], answer: 0 }
 ];
 
 // ================================================================
@@ -699,7 +805,51 @@ window.MCQ_DATA.logical = [
     { text: "A is the father of B. B is the sister of C. C is the mother of D. How is A related to D?", options: ["Grandfather", "Father", "Uncle", "Brother"], answer: 0 },
     { text: "If 3 × 4 = 15, 5 × 6 = 35, 7 × 8 = ?", options: ["63", "56", "72", "48"], answer: 0 },
     { text: "Which letter comes next in the sequence: A, C, E, G, ?", options: ["I", "H", "J", "K"], answer: 0 },
-    { text: "If you cut a rope in half, then cut one half again, how many pieces do you have?", options: ["3", "2", "4", "5"], answer: 0 }
+    { text: "If you cut a rope in half, then cut one half again, how many pieces do you have?", options: ["3", "2", "4", "5"], answer: 0 },
+    { text: "Next in series: 3, 6, 11, 18, 27, ?", options: ["38", "36", "40", "42"], answer: 0 },
+    { text: "Next: 1, 1, 2, 6, 24, ?", options: ["120", "48", "72", "96"], answer: 0 },
+    { text: "Next: 7, 14, 28, 56, ?", options: ["112", "84", "70", "100"], answer: 0 },
+    { text: "Next: 100, 96, 91, 85, ?", options: ["78", "79", "80", "82"], answer: 0 },
+    { text: "Next: 1, 4, 27, 256, ?", options: ["3125", "1024", "625", "500"], answer: 0 },
+    { text: "Next: 0, 7, 26, 63, ?", options: ["124", "125", "126", "127"], answer: 0 },
+    { text: "Next: 2, 5, 10, 17, 26, ?", options: ["37", "35", "36", "38"], answer: 0 },
+    { text: "Next: 4, 9, 25, 49, 121, ?", options: ["169", "144", "100", "81"], answer: 0 },
+    { text: "Next: 6, 24, 60, 120, ?", options: ["210", "180", "150", "240"], answer: 0 },
+    { text: "Next: 8, 27, 64, 125, ?", options: ["216", "200", "180", "250"], answer: 0 },
+
+    // Letter Series
+    { text: "Next letter: B, E, H, K, ?", options: ["N", "M", "L", "O"], answer: 0 },
+    { text: "Next: Z, X, V, T, ?", options: ["R", "S", "U", "W"], answer: 0 },
+    { text: "Next: A, C, F, J, O, ?", options: ["U", "P", "Q", "R"], answer: 0 },
+    { text: "Next: AZ, BY, CX, DW, ?", options: ["EV", "EU", "FU", "EX"], answer: 0 },
+    { text: "Next: AB, DEF, GHIJ, ?", options: ["KLMNO", "KLMN", "LMNO", "NOPQ"], answer: 0 },
+    { text: "Next: Z, Y, X, W, V, ?", options: ["U", "A", "B", "T"], answer: 0 },
+    { text: "Next: A, AA, AAA, ?", options: ["AAAA", "AAAAA", "BBBB", "B"], answer: 0 },
+    { text: "Next: ACE, BDF, CEG, ?", options: ["DFH", "EGI", "DFI", "DGI"], answer: 0 },
+    { text: "Next: P, Q, S, V, ?", options: ["A", "Z", "Y", "B"], answer: 0 },
+    { text: "Next: AB, CD, EF, GH, ?", options: ["IJ", "JK", "HI", "KL"], answer: 0 },
+
+    // Coding-Decoding
+    { text: "If CAT = 24, DOG = 26, then CROW = ?", options: ["52", "48", "50", "54"], answer: 0 },
+    { text: "If ROSE = 64, LILY = 72, then TULIP = ?", options: ["82", "80", "78", "84"], answer: 0 },
+    { text: "If APPLE = 50, MANGO = 57, then ORANGE = ?", options: ["60", "62", "58", "64"], answer: 0 },
+    { text: "If 1234 = ABCD, 2345 = BCDE, then 3456 = ?", options: ["CDEF", "DEFG", "BCDE", "EFGH"], answer: 0 },
+    { text: "If BALL = 27, BAT = 21, then BOWL = ?", options: ["44", "42", "40", "46"], answer: 0 },
+    { text: "If GREEN = 49, BLUE = 40, then RED = ?", options: ["27", "23", "25", "29"], answer: 0 },
+    { text: "If 1=A, 2=B, then what is the code for DOG?", options: ["4,15,7", "4,16,7", "5,15,7", "4,15,8"], answer: 0 },
+    { text: "If PINK = 50, BLUE = 45, then YELLOW = ?", options: ["79", "75", "80", "85"], answer: 0 },
+    { text: "If RAM = 36, SHYAM = 62, then SITA = ?", options: ["44", "46", "42", "48"], answer: 0 },
+    { text: "If 123 = ABC, 456 = DEF, then 789 = ?", options: ["GHI", "HIJ", "IJK", "JKL"], answer: 0 },
+
+    // Blood Relations
+    { text: "A is the brother of B. B is the sister of C. How is A related to C?", options: ["Brother", "Sister", "Cousin", "Uncle"], answer: 0 },
+    { text: "A is the father of B. B is the mother of C. How is A related to C?", options: ["Grandfather", "Father", "Uncle", "Brother"], answer: 0 },
+    { text: "A is the sister of B. B is the daughter of C. How is A related to C?", options: ["Daughter", "Son", "Sister", "Mother"], answer: 0 },
+    { text: "A is the mother of B. B is the brother of C. C is the daughter of D. How is A related to D?", options: ["Wife", "Sister", "Mother", "Daughter"], answer: 0 },
+    { text: "A is the uncle of B. B is the daughter of C. C is the brother of D. How is A related to D?", options: ["Brother", "Uncle", "Father", "Cousin"], answer: 0 },
+    { text: "A is the husband of B. B is the sister of C. How is A related to C?", options: ["Brother-in-law", "Brother", "Uncle", "Cousin"], answer: 0 },
+    { text: "A is the father of B and C. D is the son of B. How is D related to A?", options: ["Grandson", "Son", "Nephew", "Cousin"], answer: 0 },
+
 ];
 
 // ================================================================
