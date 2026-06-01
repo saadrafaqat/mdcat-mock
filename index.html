@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MDCAT Prep Portal</title>
+    <style>
+        :root { --primary: #00796b; --accent: #00bcd4; --bg: #f4f7f6; }
+        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); margin: 0; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
+        .container { background: white; padding: 2rem; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); width: 90%; max-width: 500px; text-align: center; }
+        .hidden { display: none; }
+        button { background: var(--primary); color: white; border: none; padding: 12px 25px; border-radius: 8px; cursor: pointer; transition: 0.3s; width: 100%; margin-top: 10px; }
+        input { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; }
+        .password-group { position: relative; }
+        .toggle-btn { position: absolute; right: 10px; top: 12px; cursor: pointer; color: #888; font-size: 12px; }
+        h1 { color: var(--primary); }
+    </style>
+</head>
+<body>
+
+    <div id="loginScreen" class="container">
+        <h1>MDCAT Portal</h1>
+        <input type="password" id="pass" placeholder="Enter Authorized Password">
+        <div class="password-group">
+            <span class="toggle-btn" onclick="togglePass()">Show</span>
+        </div>
+        <button onclick="checkLogin()">Login</button>
+    </div>
+
+    <div id="dashboard" class="container hidden">
+        <h2>Welcome, Future Doctor!</h2>
+        <p>Tips: Stay consistent and focus on Biology (45% weightage).</p>
+        <button onclick="startTest('Physics')">Physics Test (100 MCQ)</button>
+        <button onclick="startTest('Grand')">Grand Mock Test (180 MCQ)</button>
+    </div>
+
+    <div id="testScreen" class="container hidden">
+        <h2 id="testTitle">Test</h2>
+        <div id="questionArea"></div>
+        <button id="submitBtn" onclick="finishTest()">Submit</button>
+    </div>
+
+    <script>
+        // Password Visibility Toggle
+        function togglePass() {
+            const p = document.getElementById('pass');
+            const t = document.querySelector('.toggle-btn');
+            if (p.type === "password") { p.type = "text"; t.innerText = "Hide"; }
+            else { p.type = "password"; t.innerText = "Show"; }
+        }
+
+        // Login Logic
+        function checkLogin() {
+            if (document.getElementById('pass').value === "NUST2026") {
+                document.getElementById('loginScreen').classList.add('hidden');
+                document.getElementById('dashboard').classList.remove('hidden');
+            } else { alert("Unauthorized!"); }
+        }
+
+        // Placeholder for Test Logic
+        function startTest(type) {
+            document.getElementById('dashboard').classList.add('hidden');
+            document.getElementById('testScreen').classList.remove('hidden');
+            document.getElementById('testTitle').innerText = type + " Mode";
+            document.getElementById('questionArea').innerHTML = "<p>Loading Questions...</p>";
+            // You will load your JSON/JS question object here
+        }
+
+        function finishTest() {
+            alert("Test Submitted! Reviewing performance...");
+            location.reload(); // Simple reset
+        }
+    </script>
+</body>
+</html>
