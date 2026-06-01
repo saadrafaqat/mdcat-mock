@@ -892,4 +892,84 @@ console.log('✅ questions.js loaded successfully!');
 console.log('📊 Total questions:');
 SUBJECTS.forEach(function(s) {
     console.log('   ' + s + ': ' + (window.MCQ_DATA[s] ? window.MCQ_DATA[s].length : 0) + ' questions');
-});
+   // ================================================================
+// AUTO-EXPLANATION GENERATOR
+// Attaches a smart explanation to every question that lacks one
+// ================================================================
+
+(function() {
+    var subjects = ['biology', 'chemistry', 'physics', 'english', 'logical'];
+    
+    subjects.forEach(function(subject) {
+        var pool = window.MCQ_DATA[subject];
+        if (!pool) return;
+        
+        pool.forEach(function(q, idx) {
+            if (q.explanation) return; // skip if already has one
+            
+            var correctIdx = q.answer;
+            var correctText = q.options[correctIdx] || 'Answer option ' + (correctIdx + 1);
+            var questionText = q.text || '';
+            
+            // Generate contextual explanation
+            var exp = '';
+            
+            // Check if it's a "which is NOT" or "EXCEPT" question
+            if (/except|not a|not an|not the/i.test(questionText)) {
+                exp = correctText + ' is the correct answer because the other options are valid examples/types of the concept described.';
+            }
+            // If it's a definition/identification question
+            else if (/is called|is known as|refers to|means|is defined as/i.test(questionText)) {
+                exp = correctText + ' is the correct term/definition that matches the description.';
+            }
+            // If it's a "who discovered" or "who proposed" question
+            else if (/who|discovered|proposed|introduced|developed/i.test(questionText)) {
+                exp = correctText + ' is credited with this discovery/contribution.';
+            }
+            // If it's about formulas or equations
+            else if (/formula|equation|expressed as|given by|states/i.test(questionText)) {
+                exp = correctText + ' correctly represents the relationship/principle described.';
+            }
+            // If it's a "which of the following" question
+            else if (/which of the following/i.test(questionText)) {
+                exp = correctText + ' is the correct choice among the given options.';
+            }
+            // If it's about location (where, in which part)
+            else if (/occurs in|located in|found in|takes place in/i.test(questionText)) {
+                exp = correctText + ' is where this process/component is located or occurs.';
+            }
+            // If it's about function (responsible for, function of)
+            else if (/function|responsible for|involved in|role of/i.test(questionText)) {
+                exp = correctText + ' performs this function/role in the system.';
+            }
+            // If it's a "caused by" question
+            else if (/caused by|due to|because of/i.test(questionText)) {
+                exp = correctText + ' is the cause/reason for this condition/phenomenon.';
+            }
+            // Generic fallback
+            else {
+                exp = 'The correct answer is: ' + correctText + '. This is based on standard scientific/grammatical/logical principles.';
+            }
+            
+            q.explanation = exp;
+        });
+    });
+    
+    // Also fix grand test questions
+    if (typeof window.getGrandTestQuestionsImpl === 'function') {
+        var orig = window.getGrandTestQuestionsImpl;
+        window.getGrandTestQuestionsImpl = function(type) {
+            var qs = orig(type);
+            qs.forEach(function(q) {
+                if (!q.explanation) {
+                    var correctIdx = q.answer;
+                    var correctText = q.options[correctIdx] || 'Answer option ' + (correctIdx + 1);
+                    q.explanation = 'The correct answer is: ' + correctText + '.';
+                }
+            });
+            return qs;
+        };
+    }
+    
+    console.log('✅ Explanations auto-generated for all questions!');
+})();
