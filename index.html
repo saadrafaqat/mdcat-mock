@@ -1,75 +1,1078 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MDCAT Prep Portal</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MediTest Pro - MDCAT Mock Test Platform</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        :root { --primary: #00796b; --accent: #00bcd4; --bg: #f4f7f6; }
-        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); margin: 0; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
-        .container { background: white; padding: 2rem; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); width: 90%; max-width: 500px; text-align: center; }
-        .hidden { display: none; }
-        button { background: var(--primary); color: white; border: none; padding: 12px 25px; border-radius: 8px; cursor: pointer; transition: 0.3s; width: 100%; margin-top: 10px; }
-        input { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; }
-        .password-group { position: relative; }
-        .toggle-btn { position: absolute; right: 10px; top: 12px; cursor: pointer; color: #888; font-size: 12px; }
-        h1 { color: var(--primary); }
+        /* ===== RESET & ROOT ===== */
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --primary: #0a8f7c;
+            --primary-dark: #066b5c;
+            --primary-glow: rgba(10, 143, 124, 0.3);
+            --accent: #f0a500;
+            --accent-dark: #c98800;
+            --bg: #0a1628;
+            --bg-card: #112240;
+            --bg-hover: #1a2f52;
+            --text: #e6f1ff;
+            --text-sec: #8892b0;
+            --text-muted: #5a6480;
+            --success: #27ae60;
+            --danger: #e74c3c;
+            --warning: #f39c12;
+            --glass: rgba(255,255,255,0.06);
+            --border: rgba(255,255,255,0.1);
+            --radius: 16px;
+            --radius-sm: 10px;
+            --shadow: 0 25px 50px -12px rgba(0,0,0,0.5);
+            --transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+        body {
+            font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* ===== ANIMATED BG ===== */
+        #bgParticles { position: fixed; inset: 0; pointer-events: none; z-index: 0; overflow: hidden; }
+        .particle {
+            position: absolute; border-radius: 50%;
+            background: rgba(10, 143, 124, 0.12);
+            animation: float linear infinite;
+        }
+        @keyframes float {
+            0% { transform: translateY(100vh) scale(0); opacity: 0; }
+            10% { opacity: 1; }
+            100% { transform: translateY(-10vh) scale(1); opacity: 0; }
+        }
+
+        /* ===== SCREENS ===== */
+        .screen { display: none; min-height: 100vh; position: relative; z-index: 1; }
+        .screen.active { display: flex; flex-direction: column; animation: fadeIn 0.5s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes shake { 0%,100% { transform: translateX(0); } 20%,60% { transform: translateX(-10px); } 40%,80% { transform: translateX(10px); } }
+
+        /* ===== LOGIN SCREEN ===== */
+        #loginScreen { justify-content: center; align-items: center; padding: 20px; }
+        .login-box {
+            background: var(--bg-card); border: 1px solid var(--border);
+            border-radius: var(--radius); padding: 48px 40px;
+            width: 100%; max-width: 420px; box-shadow: var(--shadow);
+            backdrop-filter: blur(20px); animation: slideUp 0.7s ease;
+        }
+        .login-logo { text-align: center; margin-bottom: 32px; }
+        .login-logo .icon { font-size: 56px; display: block; margin-bottom: 8px; }
+        .login-logo h1 {
+            font-size: 30px; font-weight: 800;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        }
+        .login-logo p { color: var(--text-sec); font-size: 14px; margin-top: 4px; }
+
+        .input-group { margin-bottom: 20px; }
+        .input-group label {
+            display: block; font-size: 13px; font-weight: 600; color: var(--text-sec);
+            margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px;
+        }
+        .input-wrap { position: relative; }
+        .input-wrap input {
+            width: 100%; padding: 14px 16px; background: rgba(255,255,255,0.05);
+            border: 1px solid var(--border); border-radius: var(--radius-sm);
+            color: var(--text); font-size: 16px; transition: var(--transition); outline: none;
+        }
+        .input-wrap input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-glow); }
+        .input-wrap input::placeholder { color: var(--text-muted); }
+        .toggle-pw {
+            position: absolute; right: 14px; top: 50%; transform: translateY(-50%);
+            background: none; border: none; color: var(--text-muted); cursor: pointer;
+            font-size: 20px; padding: 4px; transition: var(--transition);
+        }
+        .toggle-pw:hover { color: var(--text); }
+
+        .login-error { color: var(--danger); font-size: 13px; margin-bottom: 12px; display: none; text-align: center; }
+
+        .btn-primary {
+            width: 100%; padding: 16px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            border: none; border-radius: var(--radius-sm); color: #fff;
+            font-size: 16px; font-weight: 700; cursor: pointer; transition: var(--transition);
+            letter-spacing: 0.5px;
+        }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 12px 24px -8px rgba(10,143,124,0.4); }
+        .btn-primary:active { transform: translateY(0); }
+
+        .login-footer { text-align: center; margin-top: 24px; color: var(--text-muted); font-size: 13px; line-height: 1.6; }
+        .login-footer a { color: var(--primary); text-decoration: none; cursor: pointer; }
+        .login-footer a:hover { text-decoration: underline; }
+
+        /* ===== DASHBOARD ===== */
+        .topbar {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 16px 32px; background: rgba(17,34,64,0.85);
+            backdrop-filter: blur(12px); border-bottom: 1px solid var(--border);
+            position: sticky; top: 0; z-index: 100;
+        }
+        .topbar .brand { display: flex; align-items: center; gap: 12px; }
+        .topbar .brand .icon { font-size: 28px; }
+        .topbar .brand h2 {
+            font-size: 20px;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        }
+        .topbar .right { display: flex; align-items: center; gap: 16px; }
+        .topbar .right .avatar {
+            width: 40px; height: 40px; border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 700; font-size: 16px; color: #fff;
+        }
+        .topbar .right .uname { font-weight: 600; font-size: 14px; color: var(--text-sec); }
+        .btn-logout {
+            padding: 8px 18px; background: rgba(231,76,60,0.15);
+            border: 1px solid rgba(231,76,60,0.3); border-radius: 8px;
+            color: var(--danger); cursor: pointer; font-weight: 600; font-size: 13px;
+            transition: var(--transition);
+        }
+        .btn-logout:hover { background: rgba(231,76,60,0.25); }
+
+        .dash-content { flex: 1; padding: 32px; max-width: 1200px; margin: 0 auto; width: 100%; }
+
+        .welcome-banner {
+            background: linear-gradient(135deg, rgba(10,143,124,0.12), rgba(240,165,0,0.08));
+            border: 1px solid var(--border); border-radius: var(--radius);
+            padding: 32px 40px; margin-bottom: 32px; position: relative; overflow: hidden;
+        }
+        .welcome-banner::after {
+            content: '⚕️'; position: absolute; right: 24px; bottom: -10px;
+            font-size: 120px; opacity: 0.06; pointer-events: none;
+        }
+        .welcome-banner h1 { font-size: 28px; margin-bottom: 8px; }
+        .welcome-banner h1 span { color: var(--accent); }
+        .welcome-banner p { color: var(--text-sec); font-size: 15px; max-width: 600px; line-height: 1.6; }
+
+        .stats-row {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 16px; margin-bottom: 32px;
+        }
+        .stat-card {
+            background: var(--bg-card); border: 1px solid var(--border);
+            border-radius: var(--radius-sm); padding: 20px 24px;
+            transition: var(--transition); cursor: default;
+        }
+        .stat-card:hover {
+            background: var(--bg-hover); transform: translateY(-4px);
+            box-shadow: 0 12px 24px -8px rgba(0,0,0,0.3);
+        }
+        .stat-card .icon { font-size: 28px; margin-bottom: 6px; }
+        .stat-card .val { font-size: 24px; font-weight: 800; }
+        .stat-card .lbl { color: var(--text-sec); font-size: 13px; margin-top: 2px; }
+
+        .section-title {
+            font-size: 20px; margin-bottom: 16px; display: flex; align-items: center; gap: 10px;
+        }
+
+        .tips-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 14px; margin-bottom: 32px;
+        }
+        .tip-card {
+            background: var(--bg-card); border: 1px solid var(--border);
+            border-radius: var(--radius-sm); padding: 20px;
+            transition: var(--transition); cursor: default;
+        }
+        .tip-card:hover { background: var(--bg-hover); transform: translateY(-3px); }
+        .tip-card .icon { font-size: 24px; margin-bottom: 8px; }
+        .tip-card h4 { font-size: 15px; margin-bottom: 4px; }
+        .tip-card p { color: var(--text-sec); font-size: 13px; line-height: 1.5; }
+
+        .test-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px; margin-bottom: 32px;
+        }
+        .test-card {
+            background: var(--bg-card); border: 1px solid var(--border);
+            border-radius: var(--radius); padding: 28px 20px; text-align: center;
+            cursor: pointer; transition: var(--transition); position: relative; overflow: hidden;
+        }
+        .test-card::before {
+            content: ''; position: absolute; inset: 0;
+            background: linear-gradient(135deg, rgba(10,143,124,0.08), transparent);
+            opacity: 0; transition: var(--transition);
+        }
+        .test-card:hover::before { opacity: 1; }
+        .test-card:hover { transform: translateY(-6px); box-shadow: 0 20px 40px -12px rgba(0,0,0,0.4); }
+        .test-card .t-icon { font-size: 40px; margin-bottom: 12px; position: relative; }
+        .test-card h3 { font-size: 17px; margin-bottom: 4px; position: relative; }
+        .test-card p { color: var(--text-sec); font-size: 13px; margin-bottom: 12px; position: relative; }
+        .test-card .badge {
+            display: inline-block; padding: 4px 14px; border-radius: 20px;
+            font-size: 12px; font-weight: 600; position: relative;
+        }
+        .badge-bio { background: rgba(39,174,96,0.2); color: #2ecc71; }
+        .badge-chem { background: rgba(52,152,219,0.2); color: #3498db; }
+        .badge-phy { background: rgba(155,89,182,0.2); color: #9b59b6; }
+        .badge-eng { background: rgba(241,196,15,0.2); color: #f1c40f; }
+        .badge-lr { background: rgba(230,126,34,0.2); color: #e67e22; }
+        .badge-grand { background: linear-gradient(135deg, rgba(240,165,0,0.3), rgba(10,143,124,0.3)); color: var(--accent); }
+
+        .test-card.biology { border-left: 4px solid #2ecc71; }
+        .test-card.chemistry { border-left: 4px solid #3498db; }
+        .test-card.physics { border-left: 4px solid #9b59b6; }
+        .test-card.english { border-left: 4px solid #f1c40f; }
+        .test-card.logical { border-left: 4px solid #e67e22; }
+        .test-card.grand1, .test-card.grand2 { border-left: 4px solid var(--accent); }
+
+        /* ===== TEST SCREEN ===== */
+        .test-header {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 16px 32px; background: rgba(17,34,64,0.9);
+            backdrop-filter: blur(12px); border-bottom: 1px solid var(--border);
+            position: sticky; top: 0; z-index: 100; flex-wrap: wrap; gap: 8px;
+        }
+        .test-header .left { display: flex; align-items: center; gap: 16px; }
+        .test-header .left h2 { font-size: 18px; }
+        .test-timer {
+            font-size: 20px; font-weight: 700; color: var(--accent);
+            font-variant-numeric: tabular-nums;
+        }
+        .test-timer.warning { color: var(--danger); animation: pulse 1s infinite; }
+        @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.5; } }
+        .btn-quit {
+            padding: 8px 16px; background: rgba(231,76,60,0.15);
+            border: 1px solid rgba(231,76,60,0.3); border-radius: 8px;
+            color: var(--danger); cursor: pointer; font-weight: 600; font-size: 13px;
+            transition: var(--transition);
+        }
+        .btn-quit:hover { background: rgba(231,76,60,0.25); }
+
+        .test-body {
+            flex: 1; display: flex; padding: 24px 32px; gap: 24px;
+            max-width: 1400px; margin: 0 auto; width: 100%;
+        }
+        .q-area { flex: 1; background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); padding: 32px; min-height: 400px; }
+        .q-num { font-size: 13px; color: var(--text-muted); margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.5px; }
+        .q-text { font-size: 18px; line-height: 1.7; margin-bottom: 28px; font-weight: 500; }
+        .options { display: flex; flex-direction: column; gap: 12px; }
+        .option {
+            padding: 16px 20px; background: rgba(255,255,255,0.03);
+            border: 2px solid var(--border); border-radius: var(--radius-sm);
+            cursor: pointer; transition: var(--transition); font-size: 15px;
+            display: flex; align-items: center; gap: 14px;
+        }
+        .option:hover { background: rgba(255,255,255,0.06); border-color: var(--text-muted); }
+        .option.selected { border-color: var(--primary); background: rgba(10,143,124,0.12); }
+        .option .radio {
+            width: 22px; height: 22px; border-radius: 50%; border: 2px solid var(--text-muted);
+            display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+            transition: var(--transition);
+        }
+        .option.selected .radio { border-color: var(--primary); background: var(--primary); }
+        .option.selected .radio::after { content: '✓'; color: #fff; font-size: 12px; font-weight: 700; }
+
+        .nav-area { width: 240px; flex-shrink: 0; }
+        .nav-area .palette {
+            background: var(--bg-card); border: 1px solid var(--border);
+            border-radius: var(--radius); padding: 20px; position: sticky; top: 100px;
+        }
+        .palette h4 {
+            font-size: 13px; color: var(--text-sec); margin-bottom: 12px;
+            text-transform: uppercase; letter-spacing: 0.5px;
+        }
+        .palette-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; margin-bottom: 16px; }
+        .palette-grid .q-btn {
+            width: 100%; aspect-ratio: 1; border: none; border-radius: 6px;
+            font-size: 12px; font-weight: 700; cursor: pointer; transition: var(--transition);
+            background: rgba(255,255,255,0.06); color: var(--text-sec);
+        }
+        .palette-grid .q-btn:hover { background: rgba(255,255,255,0.12); }
+        .palette-grid .q-btn.answered { background: var(--primary); color: #fff; }
+        .palette-grid .q-btn.current { border: 2px solid var(--accent); }
+        .palette-legend { display: flex; gap: 16px; font-size: 12px; color: var(--text-sec); margin-bottom: 16px; }
+        .palette-legend span { display: flex; align-items: center; gap: 6px; }
+        .palette-legend .dot { width: 12px; height: 12px; border-radius: 3px; background: rgba(255,255,255,0.06); }
+        .palette-legend .dot.answered { background: var(--primary); }
+
+        .btn-nav { width: 100%; padding: 12px; border: none; border-radius: 8px; font-weight: 600; font-size: 14px; cursor: pointer; transition: var(--transition); margin-bottom: 8px; }
+        .btn-submit { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: #fff; }
+        .btn-submit:hover { transform: translateY(-2px); box-shadow: 0 8px 20px -6px rgba(10,143,124,0.4); }
+
+        /* ===== RESULT SCREEN ===== */
+        #resultScreen { justify-content: center; align-items: center; padding: 20px; }
+        .result-box {
+            background: var(--bg-card); border: 1px solid var(--border);
+            border-radius: var(--radius); padding: 48px 40px;
+            width: 100%; max-width: 660px; box-shadow: var(--shadow); animation: slideUp 0.7s ease;
+        }
+        .result-box .r-header { text-align: center; margin-bottom: 24px; }
+        .result-box .r-header .big-icon { font-size: 64px; }
+        .result-box .r-header h1 { font-size: 32px; margin: 8px 0 4px; }
+        .result-box .r-header p { color: var(--text-sec); font-size: 15px; }
+
+        .score-ring {
+            width: 160px; height: 160px; border-radius: 50%; margin: 20px auto;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            border: 6px solid var(--primary); position: relative;
+        }
+        .score-ring .num { font-size: 40px; font-weight: 800; }
+        .score-ring .lbl { font-size: 13px; color: var(--text-sec); }
+
+        .breakdown {
+            display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 24px;
+        }
+        .breakdown .item { text-align: center; padding: 16px; background: rgba(255,255,255,0.03); border-radius: var(--radius-sm); }
+        .breakdown .item .v { font-size: 22px; font-weight: 700; }
+        .breakdown .item .l { font-size: 12px; color: var(--text-sec); margin-top: 2px; }
+        .breakdown .item.correct .v { color: var(--success); }
+        .breakdown .item.wrong .v { color: var(--danger); }
+        .breakdown .item.skipped .v { color: var(--text-muted); }
+
+        .r-actions { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+        .r-actions button {
+            padding: 14px 28px; border: none; border-radius: var(--radius-sm);
+            font-weight: 600; font-size: 14px; cursor: pointer; transition: var(--transition);
+        }
+        .r-actions .btn-review { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: #fff; }
+        .r-actions .btn-review:hover { transform: translateY(-2px); }
+        .r-actions .btn-dash { background: rgba(255,255,255,0.06); color: var(--text); border: 1px solid var(--border); }
+        .r-actions .btn-dash:hover { background: rgba(255,255,255,0.1); }
+
+        /* ===== REVIEW SCREEN ===== */
+        #reviewScreen { padding: 24px 32px; }
+        .rev-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; flex-wrap: wrap; gap: 12px; }
+        .rev-header h2 { font-size: 22px; display: flex; align-items: center; gap: 10px; }
+        .rev-filters { display: flex; gap: 10px; flex-wrap: wrap; }
+        .rev-filters button {
+            padding: 8px 16px; border: 1px solid var(--border); border-radius: 8px;
+            background: transparent; color: var(--text-sec); cursor: pointer;
+            font-size: 13px; transition: var(--transition);
+        }
+        .rev-filters button.active { background: rgba(10,143,124,0.15); border-color: var(--primary); color: var(--primary); }
+        .rev-filters button:hover { background: rgba(255,255,255,0.06); }
+
+        .rev-list { display: flex; flex-direction: column; gap: 16px; max-width: 900px; margin: 0 auto; }
+        .rev-card {
+            background: var(--bg-card); border: 1px solid var(--border);
+            border-radius: var(--radius-sm); padding: 24px; transition: var(--transition);
+        }
+        .rev-card:hover { border-color: var(--text-muted); }
+        .rev-card .rq { font-size: 16px; font-weight: 600; margin-bottom: 12px; }
+        .rev-card .ropts { display: flex; flex-direction: column; gap: 6px; }
+        .rev-card .ropt {
+            padding: 10px 14px; border-radius: 6px; font-size: 14px;
+            background: rgba(255,255,255,0.03); border: 1px solid transparent;
+        }
+        .rev-card .ropt.correct { background: rgba(39,174,96,0.12); border-color: var(--success); color: var(--success); }
+        .rev-card .ropt.wrong { background: rgba(231,76,60,0.12); border-color: var(--danger); color: var(--danger); }
+        .rev-card .ropt.chosen { font-weight: 700; }
+        .rev-card .r-status { margin-top: 12px; font-size: 13px; font-weight: 600; }
+        .rev-card .r-status.correct { color: var(--success); }
+        .rev-card .r-status.wrong { color: var(--danger); }
+        .rev-card .r-status.skipped { color: var(--text-muted); }
+
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: var(--bg); }
+        ::-webkit-scrollbar-thumb { background: var(--text-muted); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--text-sec); }
+
+        @media (max-width: 768px) {
+            .login-box { padding: 32px 24px; }
+            .dash-content { padding: 20px 16px; }
+            .test-body { flex-direction: column; padding: 16px; }
+            .nav-area { width: 100%; }
+            .palette-grid { grid-template-columns: repeat(8, 1fr); }
+            .topbar { padding: 12px 16px; flex-wrap: wrap; gap: 8px; }
+            .breakdown { grid-template-columns: 1fr; }
+            .welcome-banner { padding: 24px; }
+            .welcome-banner::after { font-size: 80px; }
+            #reviewScreen { padding: 16px; }
+            .rev-header h2 { font-size: 18px; }
+        }
+
+        /* ===== CONFETTI ===== */
+        .confetti {
+            position: fixed; width: 8px; height: 8px; top: -20px;
+            z-index: 999; pointer-events: none; animation: confettiFall linear forwards;
+        }
+        @keyframes confettiFall {
+            0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(110vh) rotate(720deg); opacity: 0; }
+        }
     </style>
 </head>
 <body>
 
-    <div id="loginScreen" class="container">
-        <h1>MDCAT Portal</h1>
-        <input type="password" id="pass" placeholder="Enter Authorized Password">
-        <div class="password-group">
-            <span class="toggle-btn" onclick="togglePass()">Show</span>
+    <!-- ===== PARTICLES BACKGROUND ===== -->
+    <div id="bgParticles"></div>
+
+    <!-- ============================================================
+         LOGIN SCREEN
+         ============================================================ -->
+    <div class="screen active" id="loginScreen">
+        <div class="login-box">
+            <div class="login-logo">
+                <span class="icon">🩺</span>
+                <h1>MediTest Pro</h1>
+                <p>MDCAT Mock Test Platform</p>
+            </div>
+            <form id="loginForm" autocomplete="off">
+                <div class="input-group">
+                    <label>Username</label>
+                    <div class="input-wrap">
+                        <input type="text" id="loginUser" placeholder="Enter your username" required />
+                    </div>
+                </div>
+                <div class="input-group">
+                    <label>Password</label>
+                    <div class="input-wrap">
+                        <input type="password" id="loginPass" placeholder="Enter your password" required />
+                        <button type="button" class="toggle-pw" id="togglePass">👁️</button>
+                    </div>
+                </div>
+                <div class="login-error" id="loginError">Invalid username or password. Please try again.</div>
+                <button type="submit" class="btn-primary" id="loginBtn">Sign In →</button>
+            </form>
+            <div class="login-footer">
+                Demo: <strong>admin</strong> / <strong>mdcat2025</strong><br />
+                <a id="quickLogin">Click here for quick login</a>
+            </div>
         </div>
-        <button onclick="checkLogin()">Login</button>
     </div>
 
-    <div id="dashboard" class="container hidden">
-        <h2>Welcome, Future Doctor!</h2>
-        <p>Tips: Stay consistent and focus on Biology (45% weightage).</p>
-        <button onclick="startTest('Physics')">Physics Test (100 MCQ)</button>
-        <button onclick="startTest('Grand')">Grand Mock Test (180 MCQ)</button>
+    <!-- ============================================================
+         DASHBOARD SCREEN
+         ============================================================ -->
+    <div class="screen" id="dashboardScreen">
+        <div class="topbar">
+            <div class="brand">
+                <span class="icon">🩺</span>
+                <h2>MediTest Pro</h2>
+            </div>
+            <div class="right">
+                <span class="uname" id="dashName">Dr. Admin</span>
+                <div class="avatar" id="dashAvatar">A</div>
+                <button class="btn-logout" id="logoutBtn">Logout</button>
+            </div>
+        </div>
+
+        <div class="dash-content">
+            <!-- Welcome Banner -->
+            <div class="welcome-banner">
+                <h1>Welcome back, <span id="welcomeName">Doctor</span>! 🩺</h1>
+                <p>Your comprehensive MDCAT preparation platform. Track your progress, practice subject-wise tests, and attempt full-length grand tests with real exam simulation.</p>
+            </div>
+
+            <!-- Stats -->
+            <div class="stats-row">
+                <div class="stat-card">
+                    <div class="icon">📊</div>
+                    <div class="val" id="statTests">0</div>
+                    <div class="lbl">Tests Taken</div>
+                </div>
+                <div class="stat-card">
+                    <div class="icon">🎯</div>
+                    <div class="val" id="statAvg">0%</div>
+                    <div class="lbl">Average Score</div>
+                </div>
+                <div class="stat-card">
+                    <div class="icon">⏱️</div>
+                    <div class="val">180</div>
+                    <div class="lbl">Total MCQs</div>
+                </div>
+                <div class="stat-card">
+                    <div class="icon">🏆</div>
+                    <div class="val" id="statBest">0%</div>
+                    <div class="lbl">Best Score</div>
+                </div>
+            </div>
+
+            <!-- Tips -->
+            <div class="section-title">💡 MDCAT Success Tips</div>
+            <div class="tips-grid" id="tipsGrid"></div>
+
+            <!-- Tests -->
+            <div class="section-title">📋 Select Your Test</div>
+            <div class="test-grid" id="testGrid"></div>
+        </div>
     </div>
 
-    <div id="testScreen" class="container hidden">
-        <h2 id="testTitle">Test</h2>
-        <div id="questionArea"></div>
-        <button id="submitBtn" onclick="finishTest()">Submit</button>
+    <!-- ============================================================
+         TEST SCREEN
+         ============================================================ -->
+    <div class="screen" id="testScreen">
+        <div class="test-header">
+            <div class="left">
+                <h2 id="testTitle">Loading...</h2>
+            </div>
+            <div class="test-timer" id="testTimer">00:00:00</div>
+            <button class="btn-quit" id="quitTestBtn">✕ Quit Test</button>
+        </div>
+        <div class="test-body">
+            <div class="q-area">
+                <div class="q-num" id="qNumber">Question 1 of 100</div>
+                <div class="q-text" id="qText">Loading question...</div>
+                <div class="options" id="optionsContainer"></div>
+            </div>
+            <div class="nav-area">
+                <div class="palette">
+                    <h4>Question Palette</h4>
+                    <div class="palette-grid" id="paletteGrid"></div>
+                    <div class="palette-legend">
+                        <span><span class="dot"></span> Unanswered</span>
+                        <span><span class="dot answered"></span> Answered</span>
+                    </div>
+                    <button class="btn-nav btn-submit" id="submitTestBtn">Submit Test</button>
+                </div>
+            </div>
+        </div>
     </div>
 
+    <!-- ============================================================
+         RESULT SCREEN
+         ============================================================ -->
+    <div class="screen" id="resultScreen">
+        <div class="result-box">
+            <div class="r-header">
+                <div class="big-icon" id="resultIcon">🎉</div>
+                <h1 id="resultTitle">Test Complete!</h1>
+                <p id="resultSubtitle">Great effort! Keep pushing forward.</p>
+            </div>
+            <div class="score-ring">
+                <span class="num" id="resultScore">0%</span>
+                <span class="lbl">Score</span>
+            </div>
+            <div class="breakdown">
+                <div class="item correct">
+                    <div class="v" id="resultCorrect">0</div>
+                    <div class="l">Correct</div>
+                </div>
+                <div class="item wrong">
+                    <div class="v" id="resultWrong">0</div>
+                    <div class="l">Wrong</div>
+                </div>
+                <div class="item skipped">
+                    <div class="v" id="resultSkipped">0</div>
+                    <div class="l">Skipped</div>
+                </div>
+            </div>
+            <div class="r-actions">
+                <button class="btn-review" id="reviewBtn">📝 Review Answers</button>
+                <button class="btn-dash" id="backToDashBtn">← Back to Dashboard</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================================
+         REVIEW SCREEN
+         ============================================================ -->
+    <div class="screen" id="reviewScreen">
+        <div class="rev-header">
+            <h2>📝 Answer Review</h2>
+            <div class="rev-filters" id="reviewFilters">
+                <button class="active" data-filter="all">All</button>
+                <button data-filter="correct">Correct</button>
+                <button data-filter="wrong">Wrong</button>
+                <button data-filter="skipped">Skipped</button>
+            </div>
+            <button class="btn-dash" id="reviewBackBtn" style="padding:8px 18px;background:rgba(255,255,255,0.06);border:1px solid var(--border);border-radius:8px;color:var(--text);cursor:pointer;font-weight:600;">← Dashboard</button>
+        </div>
+        <div class="rev-list" id="reviewList"></div>
+    </div>
+
+    <!-- ============================================================
+         JAVASCRIPT — questions will be loaded from questions.js
+         ============================================================ -->
     <script>
-        // Password Visibility Toggle
-        function togglePass() {
-            const p = document.getElementById('pass');
-            const t = document.querySelector('.toggle-btn');
-            if (p.type === "password") { p.type = "text"; t.innerText = "Hide"; }
-            else { p.type = "password"; t.innerText = "Show"; }
+        /* =============================================================
+           JS ENGINE - Complete application logic
+           Questions will be loaded from questions.js via window.MCQ_DATA
+           ============================================================= */
+
+        // ===== CONFIGURATION =====
+        const USERS = {
+            admin: { pw: 'mdcat2025', name: 'Dr. Admin' },
+            doctor: { pw: 'test123', name: 'Dr. Sana' },
+            student: { pw: 'student', name: 'Ali Hassan' },
+            demo: { pw: 'demo', name: 'Dr. Demo' }
+        };
+
+        const SUBJECTS = ['biology', 'chemistry', 'physics', 'english', 'logical'];
+        const SUBJ_LABEL = {
+            biology: 'Biology', chemistry: 'Chemistry', physics: 'Physics',
+            english: 'English', logical: 'Logical Reasoning'
+        };
+        const SUBJ_ICON = {
+            biology: '🧬', chemistry: '⚗️', physics: '⚛️',
+            english: '📖', logical: '🧩'
+        };
+
+        let currentUser = null;
+        let testHistory = JSON.parse(localStorage.getItem('mdcat_history') || '[]');
+
+        // ===== STATE =====
+        let S = {
+            questions: [],
+            answers: {},
+            currentQ: 0,
+            timer: null,
+            timeRemaining: 0,
+            testName: '',
+            testType: '',
+            result: null
+        };
+
+        // ===== DOM HELPERS =====
+        const $ = (s) => document.querySelector(s);
+        const $$ = (s) => document.querySelectorAll(s);
+
+        function showScreen(id) {
+            $$('.screen').forEach(el => el.classList.remove('active'));
+            $(id).classList.add('active');
         }
 
-        // Login Logic
-        function checkLogin() {
-            if (document.getElementById('pass').value === "NUST2026") {
-                document.getElementById('loginScreen').classList.add('hidden');
-                document.getElementById('dashboard').classList.remove('hidden');
-            } else { alert("Unauthorized!"); }
+        // ===== PARTICLES =====
+        function initParticles() {
+            const container = document.getElementById('bgParticles');
+            for (let i = 0; i < 35; i++) {
+                const p = document.createElement('div');
+                p.className = 'particle';
+                const size = Math.random() * 6 + 2;
+                p.style.width = size + 'px';
+                p.style.height = size + 'px';
+                p.style.left = Math.random() * 100 + '%';
+                p.style.animationDuration = (Math.random() * 25 + 12) + 's';
+                p.style.animationDelay = (Math.random() * 25) + 's';
+                container.appendChild(p);
+            }
+        }
+        initParticles();
+
+        // ===== LOGIN =====
+        document.getElementById('loginForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            doLogin();
+        });
+
+        document.getElementById('togglePass').addEventListener('click', () => {
+            const inp = document.getElementById('loginPass');
+            inp.type = inp.type === 'password' ? 'text' : 'password';
+        });
+
+        document.getElementById('quickLogin').addEventListener('click', (e) => {
+            e.preventDefault();
+            document.getElementById('loginUser').value = 'admin';
+            document.getElementById('loginPass').value = 'mdcat2025';
+            doLogin();
+        });
+
+        function doLogin() {
+            const user = document.getElementById('loginUser').value.trim();
+            const pass = document.getElementById('loginPass').value.trim();
+            const err = document.getElementById('loginError');
+
+            if (USERS[user] && USERS[user].pw === pass) {
+                currentUser = { username: user, name: USERS[user].name };
+                err.style.display = 'none';
+                enterDashboard();
+            } else {
+                err.style.display = 'block';
+                document.querySelector('.login-box').style.animation = 'shake 0.4s ease';
+                setTimeout(() => document.querySelector('.login-box').style.animation = '', 500);
+            }
         }
 
-        // Placeholder for Test Logic
-        function startTest(type) {
-            document.getElementById('dashboard').classList.add('hidden');
-            document.getElementById('testScreen').classList.remove('hidden');
-            document.getElementById('testTitle').innerText = type + " Mode";
-            document.getElementById('questionArea').innerHTML = "<p>Loading Questions...</p>";
-            // You will load your JSON/JS question object here
+        // ===== DASHBOARD =====
+        function enterDashboard() {
+            showScreen('dashboardScreen');
+            document.getElementById('dashName').textContent = currentUser.name;
+            document.getElementById('welcomeName').textContent = currentUser.name.split(' ')[0];
+            document.getElementById('dashAvatar').textContent = currentUser.name.charAt(0);
+            updateStats();
+            renderTips();
+            renderTests();
         }
 
-        function finishTest() {
-            alert("Test Submitted! Reviewing performance...");
-            location.reload(); // Simple reset
+        function updateStats() {
+            const h = testHistory;
+            const total = h.length;
+            const avg = total > 0 ? Math.round(h.reduce((s, t) => s + t.percentage, 0) / total) : 0;
+            const best = total > 0 ? Math.max(...h.map(t => t.percentage)) : 0;
+            document.getElementById('statTests').textContent = total;
+            document.getElementById('statAvg').textContent = avg + '%';
+            document.getElementById('statBest').textContent = best + '%';
         }
+
+        function renderTips() {
+            const tips = [
+                { icon: '📚', title: 'Master the Syllabus', desc: 'Biology is 45% of the test — allocate your study time proportionally across all subjects based on weightage.' },
+                { icon: '⏰', title: 'Time Management', desc: 'You have 3.5 hours for 180 MCQs. That\'s ~70 seconds per question. Practice pacing yourself.' },
+                { icon: '🧠', title: 'Conceptual Understanding', desc: '70% of questions are moderate level. Focus on understanding concepts deeply, not rote memorization.' },
+                { icon: '📝', title: 'Practice Daily', desc: 'Regular mock tests build exam stamina and confidence. Aim for at least 2 full-length tests per week.' },
+                { icon: '🔍', title: 'Review Your Mistakes', desc: 'Each wrong answer is a learning opportunity. Analyze patterns in your errors to strengthen weak areas.' },
+                { icon: '💤', title: 'Rest & Recharge', desc: 'Sleep 7-8 hours before the exam. A well-rested mind performs up to 30% better than a fatigued one.' }
+            ];
+            document.getElementById('tipsGrid').innerHTML = tips.map(t => `
+                <div class="tip-card">
+                    <div class="icon">${t.icon}</div>
+                    <h4>${t.title}</h4>
+                    <p>${t.desc}</p>
+                </div>
+            `).join('');
+        }
+
+        function renderTests() {
+            const grid = document.getElementById('testGrid');
+            const items = [
+                { subj: 'biology', label: 'Biology', icon: '🧬', badge: 'Subject Test • 100 MCQs', cls: 'badge-bio' },
+                { subj: 'chemistry', label: 'Chemistry', icon: '⚗️', badge: 'Subject Test • 100 MCQs', cls: 'badge-chem' },
+                { subj: 'physics', label: 'Physics', icon: '⚛️', badge: 'Subject Test • 100 MCQs', cls: 'badge-phy' },
+                { subj: 'english', label: 'English', icon: '📖', badge: 'Subject Test • 100 MCQs', cls: 'badge-eng' },
+                { subj: 'logical', label: 'Logical Reasoning', icon: '🧩', badge: 'Subject Test • 100 MCQs', cls: 'badge-lr' },
+                { subj: 'grand1', label: 'Grand Test 1', icon: '🏆', badge: 'Full Syllabus • 180 MCQs', cls: 'badge-grand' },
+                { subj: 'grand2', label: 'Grand Test 2', icon: '🏆', badge: 'Full Syllabus • 180 MCQs', cls: 'badge-grand' }
+            ];
+            grid.innerHTML = items.map(it => `
+                <div class="test-card ${it.subj}" onclick="startTest('${it.subj}')">
+                    <div class="t-icon">${it.icon}</div>
+                    <h3>${it.label}</h3>
+                    <p>${it.subj.startsWith('grand') ? '3.5 hours • Full Syllabus' : '1.5 hours'}</p>
+                    <span class="badge ${it.cls}">${it.badge}</span>
+                </div>
+            `).join('');
+        }
+
+        document.getElementById('logoutBtn').addEventListener('click', () => {
+            currentUser = null;
+            if (S.timer) clearInterval(S.timer);
+            showScreen('loginScreen');
+            document.getElementById('loginForm').reset();
+        });
+
+        // ===== TEST ENGINE =====
+        window.startTest = function(type) {
+            // This function will be connected to questions.js
+            // For now, it shows the test screen with placeholder
+            // The actual implementation will be in questions.js integration
+
+            let qs = [];
+            let timeSec = 0;
+            let name = '';
+
+            if (type === 'grand1' || type === 'grand2') {
+                name = type === 'grand1' ? 'Grand Test 1' : 'Grand Test 2';
+                timeSec = 3.5 * 3600;
+                // Grand test questions will come from questions.js
+                qs = getGrandTestQuestions(type);
+            } else if (SUBJECTS.includes(type)) {
+                name = SUBJ_LABEL[type] + ' Test';
+                timeSec = 1.5 * 3600;
+                // Subject questions will come from questions.js
+                qs = getSubjectQuestions(type);
+            } else {
+                return;
+            }
+
+            if (!qs || qs.length === 0) {
+                alert('Questions not loaded yet. Please make sure questions.js is included.');
+                return;
+            }
+
+            S.questions = qs;
+            S.answers = {};
+            S.currentQ = 0;
+            S.timeRemaining = timeSec;
+            S.testName = name;
+            S.testType = type;
+            S.result = null;
+
+            showScreen('testScreen');
+            document.getElementById('testTitle').textContent = S.testName;
+            renderPalette();
+            renderQuestion();
+            startTimer();
+        };
+
+        function getSubjectQuestions(subject) {
+            // Will be overridden by questions.js
+            if (window.MCQ_DATA && window.MCQ_DATA[subject]) {
+                return window.MCQ_DATA[subject].map((q, i) => ({
+                    ...q,
+                    id: `${subject}-${i+1}`,
+                    subject: subject
+                }));
+            }
+            return null;
+        }
+
+        function getGrandTestQuestions(type) {
+            // Will be overridden by questions.js
+            if (window.getGrandTestQuestionsImpl) {
+                return window.getGrandTestQuestionsImpl(type);
+            }
+            return null;
+        }
+
+        function renderPalette() {
+            const grid = document.getElementById('paletteGrid');
+            grid.innerHTML = S.questions.map((q, i) => `
+                <button class="q-btn ${S.answers[q.id] !== undefined ? 'answered' : ''} ${i === S.currentQ ? 'current' : ''}"
+                        onclick="goToQ(${i})">${i+1}</button>
+            `).join('');
+        }
+
+        function renderQuestion() {
+            const q = S.questions[S.currentQ];
+            if (!q) return;
+            document.getElementById('qNumber').textContent =
+                `Question ${S.currentQ + 1} of ${S.questions.length}`;
+            document.getElementById('qText').textContent = q.text;
+            const container = document.getElementById('optionsContainer');
+            const selected = S.answers[q.id];
+            const letters = ['A', 'B', 'C', 'D'];
+            container.innerHTML = q.options.map((opt, i) => `
+                <div class="option ${selected === i ? 'selected' : ''}" onclick="selectOption(${i})">
+                    <div class="radio">${selected === i ? '✓' : ''}</div>
+                    <span><strong>${letters[i]}.</strong> ${opt}</span>
+                </div>
+            `).join('');
+            renderPalette();
+        }
+
+        window.selectOption = function(idx) {
+            const q = S.questions[S.currentQ];
+            if (!q) return;
+            S.answers[q.id] = idx;
+            renderQuestion();
+        };
+
+        window.goToQ = function(idx) {
+            if (idx >= 0 && idx < S.questions.length) {
+                S.currentQ = idx;
+                renderQuestion();
+            }
+        };
+
+        function startTimer() {
+            if (S.timer) clearInterval(S.timer);
+            updateTimerDisplay();
+            S.timer = setInterval(() => {
+                S.timeRemaining--;
+                updateTimerDisplay();
+                if (S.timeRemaining <= 0) {
+                    clearInterval(S.timer);
+                    submitTest();
+                }
+            }, 1000);
+        }
+
+        function updateTimerDisplay() {
+            const t = S.timeRemaining;
+            const h = Math.floor(t / 3600);
+            const m = Math.floor((t % 3600) / 60);
+            const s = t % 60;
+            const el = document.getElementById('testTimer');
+            el.textContent = `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+            el.className = 'test-timer' + (t < 300 ? ' warning' : '');
+        }
+
+        // ===== SUBMIT / QUIT =====
+        document.getElementById('submitTestBtn').addEventListener('click', () => {
+            const answered = Object.keys(S.answers).length;
+            const total = S.questions.length;
+            if (answered < total) {
+                if (!confirm(`${total - answered} question(s) unanswered. Submit anyway?`)) return;
+            } else {
+                if (!confirm('Submit your test?')) return;
+            }
+            submitTest();
+        });
+
+        document.getElementById('quitTestBtn').addEventListener('click', () => {
+            if (confirm('Quit test? Your progress will be lost.')) {
+                if (S.timer) clearInterval(S.timer);
+                enterDashboard();
+            }
+        });
+
+        function submitTest() {
+            if (S.timer) clearInterval(S.timer);
+
+            let correct = 0;
+            let wrong = 0;
+            let skipped = 0;
+
+            S.questions.forEach(q => {
+                const ans = S.answers[q.id];
+                if (ans === undefined) skipped++;
+                else if (ans === q.answer) correct++;
+                else wrong++;
+            });
+
+            const total = S.questions.length;
+            const percentage = Math.round((correct / total) * 100);
+
+            S.result = { correct, wrong, skipped, total, percentage };
+
+            // Save to history
+            testHistory.push({
+                testName: S.testName,
+                testType: S.testType,
+                correct,
+                wrong,
+                skipped,
+                total,
+                percentage,
+                date: new Date().toISOString()
+            });
+            localStorage.setItem('mdcat_history', JSON.stringify(testHistory));
+
+            showResult();
+        }
+
+        function showResult() {
+            const r = S.result;
+            const isGood = r.percentage >= 70;
+            const isGreat = r.percentage >= 85;
+
+            document.getElementById('resultIcon').textContent = isGreat ? '🏆' : isGood ? '🎉' : '💪';
+            document.getElementById('resultTitle').textContent = isGreat ? 'Outstanding!' : isGood ? 'Well Done!' : 'Keep Trying!';
+            document.getElementById('resultSubtitle').textContent = isGreat
+                ? 'You\'re on track for an excellent score in the real exam!'
+                : isGood
+                ? 'Good performance! Review your mistakes to improve further.'
+                : 'Don\'t give up! Analyze your errors and practice more.';
+            document.getElementById('resultScore').textContent = r.percentage + '%';
+            document.getElementById('resultCorrect').textContent = r.correct;
+            document.getElementById('resultWrong').textContent = r.wrong;
+            document.getElementById('resultSkipped').textContent = r.skipped;
+
+            // Show confetti for good scores
+            if (r.percentage >= 60) showConfetti();
+
+            showScreen('resultScreen');
+            updateStats();
+        }
+
+        // ===== CONFETTI =====
+        function showConfetti() {
+            const colors = ['#0a8f7c', '#f0a500', '#e74c3c', '#3498db', '#2ecc71', '#9b59b6', '#f39c12'];
+            for (let i = 0; i < 60; i++) {
+                setTimeout(() => {
+                    const el = document.createElement('div');
+                    el.className = 'confetti';
+                    el.style.left = Math.random() * 100 + '%';
+                    el.style.background = colors[Math.floor(Math.random() * colors.length)];
+                    el.style.width = (Math.random() * 8 + 4) + 'px';
+                    el.style.height = (Math.random() * 8 + 4) + 'px';
+                    el.style.borderRadius = Math.random() > 0.5 ? '50%' : '0';
+                    el.style.animationDuration = (Math.random() * 2 + 2) + 's';
+                    document.body.appendChild(el);
+                    setTimeout(() => el.remove(), 4000);
+                }, i * 50);
+            }
+        }
+
+        // ===== REVIEW =====
+        document.getElementById('reviewBtn').addEventListener('click', () => {
+            showReview();
+        });
+
+        document.getElementById('backToDashBtn').addEventListener('click', () => {
+            enterDashboard();
+        });
+
+        document.getElementById('reviewBackBtn').addEventListener('click', () => {
+            enterDashboard();
+        });
+
+        let reviewFilter = 'all';
+
+        document.querySelectorAll('.rev-filters button').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.rev-filters button').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                reviewFilter = btn.dataset.filter;
+                renderReview();
+            });
+        });
+
+        function showReview() {
+            showScreen('reviewScreen');
+            renderReview();
+        }
+
+        function renderReview() {
+            const list = document.getElementById('reviewList');
+            const letters = ['A', 'B', 'C', 'D'];
+            const filtered = S.questions.filter(q => {
+                const ans = S.answers[q.id];
+                const isCorrect = ans === q.answer;
+                const isWrong = ans !== undefined && ans !== q.answer;
+                const isSkipped = ans === undefined;
+                if (reviewFilter === 'all') return true;
+                if (reviewFilter === 'correct') return isCorrect;
+                if (reviewFilter === 'wrong') return isWrong;
+                if (reviewFilter === 'skipped') return isSkipped;
+                return true;
+            });
+
+            if (filtered.length === 0) {
+                list.innerHTML = '<div style="text-align:center;padding:40px;color:var(--text-muted);">No questions match this filter.</div>';
+                return;
+            }
+
+            list.innerHTML = filtered.map(q => {
+                const ans = S.answers[q.id];
+                const isCorrect = ans === q.answer;
+                const isWrong = ans !== undefined && ans !== q.answer;
+                const isSkipped = ans === undefined;
+                const statusClass = isCorrect ? 'correct' : isWrong ? 'wrong' : 'skipped';
+                const statusText = isCorrect ? '✅ Correct' : isWrong ? '❌ Wrong' : '⏭️ Skipped';
+
+                return `
+                    <div class="rev-card">
+                        <div class="rq">${q.text}</div>
+                        <div class="ropts">
+                            ${q.options.map((opt, i) => {
+                                let cls = '';
+                                if (i === q.answer) cls += ' correct';
+                                if (ans === i && i !== q.answer) cls += ' wrong';
+                                if (ans === i) cls += ' chosen';
+                                return `<div class="ropt${cls}"><strong>${letters[i]}.</strong> ${opt}${i === q.answer ? ' ✓' : ''}${ans === i && i !== q.answer ? ' ✗' : ''}</div>`;
+                            }).join('')}
+                        </div>
+                        <div class="r-status ${statusClass}">${statusText}</div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // ===== KEYBOARD SUPPORT IN TEST =====
+        document.addEventListener('keydown', (e) => {
+            const testActive = document.getElementById('testScreen').classList.contains('active');
+            if (!testActive) return;
+
+            if (e.key === '1' || e.key === 'a' || e.key === 'A') selectOption(0);
+            else if (e.key === '2' || e.key === 'b' || e.key === 'B') selectOption(1);
+            else if (e.key === '3' || e.key === 'c' || e.key === 'C') selectOption(2);
+            else if (e.key === '4' || e.key === 'd' || e.key === 'D') selectOption(3);
+            else if (e.key === 'ArrowLeft') goToQ(S.currentQ - 1);
+            else if (e.key === 'ArrowRight') goToQ(S.currentQ + 1);
+        });
+
+        console.log('✅ MediTest Pro loaded successfully!');
+        console.log('📦 Waiting for questions.js to provide question data...');
     </script>
+
+    <!-- ===== questions.js will be loaded here ===== -->
+    <!-- Uncomment the line below when questions.js is ready -->
+    <!-- <script src="questions.js"></script> -->
+
 </body>
 </html>
