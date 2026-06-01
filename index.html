@@ -38,6 +38,8 @@
             min-height: 100vh;
             overflow-x: hidden;
         }
+        a { color: var(--primary); text-decoration: none; }
+        a:hover { text-decoration: underline; }
 
         /* ===== ANIMATED BG ===== */
         #bgParticles { position: fixed; inset: 0; pointer-events: none; z-index: 0; overflow: hidden; }
@@ -107,10 +109,6 @@
         }
         .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 12px 24px -8px rgba(10,143,124,0.4); }
         .btn-primary:active { transform: translateY(0); }
-
-        .login-footer { text-align: center; margin-top: 24px; color: var(--text-muted); font-size: 13px; line-height: 1.6; }
-        .login-footer a { color: var(--primary); text-decoration: none; cursor: pointer; }
-        .login-footer a:hover { text-decoration: underline; }
 
         /* ===== DASHBOARD ===== */
         .topbar {
@@ -392,10 +390,8 @@
             .welcome-banner { padding: 24px; }
             .welcome-banner::after { font-size: 80px; }
             #reviewScreen { padding: 16px; }
-            .rev-header h2 { font-size: 18px; }
         }
 
-        /* ===== CONFETTI ===== */
         .confetti {
             position: fixed; width: 8px; height: 8px; top: -20px;
             z-index: 999; pointer-events: none; animation: confettiFall linear forwards;
@@ -438,10 +434,6 @@
                 <div class="login-error" id="loginError">Invalid username or password. Please try again.</div>
                 <button type="submit" class="btn-primary" id="loginBtn">Sign In →</button>
             </form>
-            <div class="login-footer">
-                Demo: <strong>admin</strong> / <strong>mdcat2025</strong><br />
-                <a id="quickLogin">Click here for quick login</a>
-            </div>
         </div>
     </div>
 
@@ -517,7 +509,11 @@
             <div class="q-area">
                 <div class="q-num" id="qNumber">Question 1 of 100</div>
                 <div class="q-text" id="qText">Loading question...</div>
-                <div class="options" id="optionsContainer"></div>
+                <div class="options" id="optionsContainer">
+                    <p style="color:var(--text-muted);text-align:center;padding:40px;">
+                        ⏳ Waiting for questions.js to load...
+                    </p>
+                </div>
             </div>
             <div class="nav-area">
                 <div class="palette">
@@ -586,20 +582,18 @@
     </div>
 
     <!-- ============================================================
-         JAVASCRIPT — questions will be loaded from questions.js
+         JAVASCRIPT
          ============================================================ -->
     <script>
         /* =============================================================
            JS ENGINE - Complete application logic
-           Questions will be loaded from questions.js via window.MCQ_DATA
            ============================================================= */
 
         // ===== CONFIGURATION =====
         const USERS = {
             admin: { pw: 'mdcat2025', name: 'Dr. Admin' },
             doctor: { pw: 'test123', name: 'Dr. Sana' },
-            student: { pw: 'student', name: 'Ali Hassan' },
-            demo: { pw: 'demo', name: 'Dr. Demo' }
+            student: { pw: 'student', name: 'Ali Hassan' }
         };
 
         const SUBJECTS = ['biology', 'chemistry', 'physics', 'english', 'logical'];
@@ -664,23 +658,23 @@
             inp.type = inp.type === 'password' ? 'text' : 'password';
         });
 
-        document.getElementById('quickLogin').addEventListener('click', (e) => {
-            e.preventDefault();
-            document.getElementById('loginUser').value = 'admin';
-            document.getElementById('loginPass').value = 'mdcat2025';
-            doLogin();
-        });
-
         function doLogin() {
             const user = document.getElementById('loginUser').value.trim();
             const pass = document.getElementById('loginPass').value.trim();
             const err = document.getElementById('loginError');
+
+            if (!user || !pass) {
+                err.textContent = 'Please enter both username and password.';
+                err.style.display = 'block';
+                return;
+            }
 
             if (USERS[user] && USERS[user].pw === pass) {
                 currentUser = { username: user, name: USERS[user].name };
                 err.style.display = 'none';
                 enterDashboard();
             } else {
+                err.textContent = 'Invalid username or password. Please try again.';
                 err.style.display = 'block';
                 document.querySelector('.login-box').style.animation = 'shake 0.4s ease';
                 setTimeout(() => document.querySelector('.login-box').style.animation = '', 500);
@@ -756,10 +750,6 @@
 
         // ===== TEST ENGINE =====
         window.startTest = function(type) {
-            // This function will be connected to questions.js
-            // For now, it shows the test screen with placeholder
-            // The actual implementation will be in questions.js integration
-
             let qs = [];
             let timeSec = 0;
             let name = '';
@@ -767,19 +757,17 @@
             if (type === 'grand1' || type === 'grand2') {
                 name = type === 'grand1' ? 'Grand Test 1' : 'Grand Test 2';
                 timeSec = 3.5 * 3600;
-                // Grand test questions will come from questions.js
                 qs = getGrandTestQuestions(type);
             } else if (SUBJECTS.includes(type)) {
                 name = SUBJ_LABEL[type] + ' Test';
                 timeSec = 1.5 * 3600;
-                // Subject questions will come from questions.js
                 qs = getSubjectQuestions(type);
             } else {
                 return;
             }
 
             if (!qs || qs.length === 0) {
-                alert('Questions not loaded yet. Please make sure questions.js is included.');
+                alert('⚠️ Questions not loaded. Please make sure questions.js is properly linked.\n\nCheck the console for errors.');
                 return;
             }
 
@@ -799,7 +787,6 @@
         };
 
         function getSubjectQuestions(subject) {
-            // Will be overridden by questions.js
             if (window.MCQ_DATA && window.MCQ_DATA[subject]) {
                 return window.MCQ_DATA[subject].map((q, i) => ({
                     ...q,
@@ -807,15 +794,89 @@
                     subject: subject
                 }));
             }
-            return null;
+            // Fallback demo questions if no questions.js loaded
+            return getFallbackQuestions(subject, 100);
         }
 
         function getGrandTestQuestions(type) {
-            // Will be overridden by questions.js
             if (window.getGrandTestQuestionsImpl) {
                 return window.getGrandTestQuestionsImpl(type);
             }
-            return null;
+            // Fallback: combine subjects
+            let all = [];
+            const counts = { biology: 81, chemistry: 45, physics: 36, english: 9, logical: 9 };
+            SUBJECTS.forEach(s => {
+                const fb = getFallbackQuestions(s, counts[s]);
+                all = all.concat(fb);
+            });
+            // Shuffle
+            for (let i = all.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [all[i], all[j]] = [all[j], all[i]];
+            }
+            return all;
+        }
+
+        function getFallbackQuestions(subject, count) {
+            // Demo questions so the app works even without questions.js
+            const demoQ = [];
+            const templates = {
+                biology: [
+                    'Which organelle is known as the powerhouse of the cell?',
+                    'DNA replication occurs during which phase?',
+                    'What is the functional unit of the kidney?',
+                    'How many chambers does the human heart have?',
+                    'Hemoglobin contains which metal ion?'
+                ],
+                chemistry: [
+                    'What is the molar mass of H₂O?',
+                    'Which is a strong acid?',
+                    'The pH of pure water at 25°C is:',
+                    'How many moles in 18g of water?',
+                    'Which element has highest electronegativity?'
+                ],
+                physics: [
+                    'SI unit of force is:',
+                    'Speed of light in vacuum:',
+                    'Ohm\'s law relates:',
+                    'Acceleration due to gravity is:',
+                    'Unit of current is:'
+                ],
+                english: [
+                    'Synonym of "Abundant"?',
+                    'Correct sentence:',
+                    'Antonym of "Benevolent"?',
+                    'Correct spelling:',
+                    'Which is a noun?'
+                ],
+                logical: [
+                    'If all A are B and some B are C:',
+                    'Next: 2, 6, 18, 54, ?',
+                    'Which is the odd one out?',
+                    'Monday + 15 days = ?',
+                    'Angle at 3:15 between hands?'
+                ]
+            };
+            const opts = {
+                biology: [['Mitochondria','Nucleus','Ribosome','Golgi'], ['S phase','G1 phase','G2 phase','M phase'], ['Nephron','Neuron','Alveolus','Villus'], ['4','3','2','5'], ['Iron','Copper','Zinc','Magnesium']],
+                chemistry: [['18 g/mol','16 g/mol','20 g/mol','22 g/mol'], ['HCl','H₂CO₃','CH₃COOH','H₂S'], ['7','6','8','5'], ['1','2','0.5','3'], ['Fluorine','Chlorine','Oxygen','Nitrogen']],
+                physics: [['Newton','Joule','Watt','Pascal'], ['3×10⁸ m/s','3×10⁶ m/s','3×10¹⁰ m/s','3×10⁴ m/s'], ['V=IR','F=ma','E=mc²','P=IV'], ['9.8 m/s²','8.9 m/s²','10.8 m/s²','7.6 m/s²'], ['Ampere','Volt','Ohm','Coulomb']],
+                english: [['Plentiful','Scarce','Limited','Rare'], ['She goes to school daily.','She go to school daily.','She going to school.','She gone to school.'], ['Malevolent','Kind','Generous','Compassionate'], ['Accommodation','Acomodation','Accomodation','Acommodation'], ['Happiness','Happy','Happily','Happier']],
+                logical: [['Some A are C','All C are B','No A is C','All A are C'], ['162','108','72','216'], ['Rose','Cat','Dog','Lion'], ['Tuesday','Wednesday','Monday','Thursday'], ['7.5°','30°','0°','15°']]
+            };
+            const tpl = templates[subject] || templates.biology;
+            const opt = opts[subject] || opts.biology;
+            for (let i = 0; i < count; i++) {
+                const idx = i % tpl.length;
+                demoQ.push({
+                    id: `${subject}-demo-${i+1}`,
+                    text: tpl[idx] + (i >= tpl.length ? ` (V${Math.floor(i/tpl.length)+1})` : ''),
+                    options: opt[idx].slice(),
+                    answer: 0,
+                    subject: subject
+                });
+            }
+            return demoQ;
         }
 
         function renderPalette() {
@@ -923,11 +984,7 @@
             testHistory.push({
                 testName: S.testName,
                 testType: S.testType,
-                correct,
-                wrong,
-                skipped,
-                total,
-                percentage,
+                correct, wrong, skipped, total, percentage,
                 date: new Date().toISOString()
             });
             localStorage.setItem('mdcat_history', JSON.stringify(testHistory));
@@ -952,7 +1009,6 @@
             document.getElementById('resultWrong').textContent = r.wrong;
             document.getElementById('resultSkipped').textContent = r.skipped;
 
-            // Show confetti for good scores
             if (r.percentage >= 60) showConfetti();
 
             showScreen('resultScreen');
@@ -982,14 +1038,8 @@
         document.getElementById('reviewBtn').addEventListener('click', () => {
             showReview();
         });
-
-        document.getElementById('backToDashBtn').addEventListener('click', () => {
-            enterDashboard();
-        });
-
-        document.getElementById('reviewBackBtn').addEventListener('click', () => {
-            enterDashboard();
-        });
+        document.getElementById('backToDashBtn').addEventListener('click', enterDashboard);
+        document.getElementById('reviewBackBtn').addEventListener('click', enterDashboard);
 
         let reviewFilter = 'all';
 
@@ -1053,11 +1103,10 @@
             }).join('');
         }
 
-        // ===== KEYBOARD SUPPORT IN TEST =====
+        // ===== KEYBOARD SUPPORT =====
         document.addEventListener('keydown', (e) => {
             const testActive = document.getElementById('testScreen').classList.contains('active');
             if (!testActive) return;
-
             if (e.key === '1' || e.key === 'a' || e.key === 'A') selectOption(0);
             else if (e.key === '2' || e.key === 'b' || e.key === 'B') selectOption(1);
             else if (e.key === '3' || e.key === 'c' || e.key === 'C') selectOption(2);
@@ -1067,11 +1116,11 @@
         });
 
         console.log('✅ MediTest Pro loaded successfully!');
-        console.log('📦 Waiting for questions.js to provide question data...');
+        console.log('📦 Ready to accept questions from questions.js');
+        console.log('📝 Demo users: admin/mdcat2025, doctor/test123, student/student');
     </script>
 
-    <!-- ===== questions.js will be loaded here ===== -->
-    <!-- Uncomment the line below when questions.js is ready -->
+    <!-- ===== Load questions.js (uncomment when ready) ===== -->
     <!-- <script src="questions.js"></script> -->
 
 </body>
