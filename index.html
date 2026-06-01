@@ -468,12 +468,6 @@
 
     <script>
         // ===== CONFIGURATION =====
-        // === UPDATE THIS OBJECT TO MATCH YOUR QUESTIONS.JS STRUCTURE ===
-        // The code below expects a global object: window.QUESTIONS_BANK
-        // with keys matching the test IDs defined in TESTS array.
-        // Each entry is an array of { id, question, options: [A,B,C,D,E], answer (letter) }
-        // Example: window.QUESTIONS_BANK = { biology: [...], chemistry: [...], ... }
-        
         const TESTS = [
             { id: 'biology', label: 'Biology', icon: '🧬', badge: 'Subject Test • 100 MCQs', cls: 'badge-bio', time: 5400 },
             { id: 'chemistry', label: 'Chemistry', icon: '⚗️', badge: 'Subject Test • 100 MCQs', cls: 'badge-chem', time: 5400 },
@@ -497,7 +491,7 @@
         let testHistory = JSON.parse(localStorage.getItem('mdcat_history') || '[]');
         let currentTest = null;        // test config object
         let questions = [];            // current test questions
-        let answers = [];              // selected answer letter for each question index
+        let answers = [];              // selected answer INDEX for each question (0-based)
         let currentQ = 0;             // 0-indexed
         let timerInterval = null;
         let timeRemaining = 0;
@@ -607,19 +601,41 @@
 
         // ===== TEST ENGINE =====
         function getQuestionsForTest(testId) {
-            // Try to load from global QUESTIONS_BANK (set by questions.js)
-            if (window.QUESTIONS_BANK && window.QUESTIONS_BANK[testId]) {
-                return window.QUESTIONS_BANK[testId];
+            // Grand tests use a special builder function from questions.js
+            if ((testId === 'grand1' || testId === 'grand2') && typeof window.getGrandTestQuestionsImpl === 'function') {
+                return window.getGrandTestQuestionsImpl(testId);
             }
-            // Fallback: generate sample questions so tests are functional
-            var totalQ = (testId.startsWith('grand')) ? 30 : 10; // smaller for demo
+            
+            // Subject tests: load from MCQ_DATA
+            if (window.MCQ_DATA && window.MCQ_DATA[testId]) {
+                var pool = window.MCQ_DATA[testId];
+                // Return ALL questions from the pool (up to a reasonable cap)
+                var maxQ = testId.startsWith('grand') ? 180 : pool.length;
+                var qs = [];
+                for (var i = 0; i < Math.min(maxQ, pool.length); i++) {
+                    var src = pool[i];
+                    // Normalize: questions.js uses { text, options: [...], answer: index }
+                    // Convert to our internal format
+                    qs.push({
+                        id: testId + '_q' + (i + 1),
+                        question: src.text || src.question || 'Question #' + (i + 1),
+                        options: src.options || ['A', 'B', 'C', 'D', 'E'],
+                        answer: src.answer !== undefined ? src.answer : 0,  // index-based
+                        subject: src.subject || testId
+                    });
+                }
+                return qs;
+            }
+            
+            // Fallback: sample questions
+            var totalQ = 10;
             var qs = [];
             for (var i = 0; i < totalQ; i++) {
                 qs.push({
                     id: testId + '_q' + (i + 1),
-                    question: 'Sample ' + testId + ' question #' + (i + 1) + '. What is the correct answer?',
-                    options: ['Option A for Q' + (i + 1), 'Option B for Q' + (i + 1), 'Option C for Q' + (i + 1), 'Option D for Q' + (i + 1), 'Option E for Q' + (i + 1)],
-                    answer: 'A'
+                    question: 'Sample ' + testId + ' question #' + (i + 1),
+                    options: ['Option A', 'Option B', 'Option C', 'Option D'],
+                    answer: 0
                 });
             }
             return qs;
@@ -636,7 +652,7 @@
             // Load questions
             var qs = getQuestionsForTest(testId);
             if (!qs || qs.length === 0) {
-                alert('No questions available for this test. Make sure questions.js defines window.QUESTIONS_BANK["' + testId + '"].');
+                alert('No questions available for this test. Make sure questions.js is loaded correctly.');
                 return;
             }
 
@@ -668,9 +684,9 @@
             var opts = q.options || [];
             for (var i = 0; i < opts.length; i++) {
                 var letter = LETTERS[i] || String.fromCharCode(65 + i);
-                var checked = (answers[currentQ] === letter) ? 'checked' : '';
+                var checked = (answers[currentQ] !== null && answers[currentQ] === i) ? 'checked' : '';
                 optsHtml += '<label class="option-label' + (checked ? ' selected' : '') + '">' +
-                    '<input type="radio" name="qoption" value="' + letter + '" ' + checked + ' />' +
+                    '<input type="radio" name="qoption" value="' + i + '" ' + checked + ' />' +
                     '<span class="opt-letter">' + letter + '.</span>' +
                     '<span>' + opts[i] + '</span>' +
                     '</label>';
@@ -680,7 +696,7 @@
             // Attach change listeners
             document.querySelectorAll('input[name="qoption"]').forEach(function(el) {
                 el.addEventListener('change', function() {
-                    answers[currentQ] = this.value;
+                    answers[currentQ] = parseInt(this.value);
                     // Update styling
                     document.querySelectorAll('.option-label').forEach(function(lbl) {
                         lbl.classList.remove('selected');
@@ -693,10 +709,9 @@
 
         function renderGrid() {
             var html = '';
-            var answeredCount = 0;
             for (var i = 0; i < questions.length; i++) {
                 var cls = '';
-                if (answers[i] !== null) { cls = 'answered'; answeredCount++; }
+                if (answers[i] !== null) { cls = 'answered'; }
                 if (i === currentQ) { cls += ' current'; }
                 html += '<button class="' + cls + '" data-qidx="' + i + '">' + (i + 1) + '</button>';
             }
@@ -788,7 +803,7 @@
             var skipped = 0;
 
             for (var i = 0; i < questions.length; i++) {
-                if (answers[i] === null) {
+                if (answers[i] === null || answers[i] === undefined) {
                     skipped++;
                 } else if (answers[i] === questions[i].answer) {
                     correct++;
@@ -845,7 +860,6 @@
         });
 
         // ===== INIT =====
-        // Show login by default; dashboard shown after login.
         console.log('✅ MediTest Pro ready!');
     </script>
     <script src="questions.js"></script>
