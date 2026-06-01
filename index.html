@@ -6,7 +6,10 @@
     <title>MediTest Pro - MDCAT Mock Test Platform</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Segoe UI', system-ui, sans-serif; background: #0a1628; color: #e6f1ff; min-height: 100vh; }
+        body {
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+            background: #f0f2f5; color: #1a1a2e; min-height: 100vh;
+        }
         
         .screen { display: none; min-height: 100vh; }
         .screen.active { display: block; }
@@ -18,293 +21,347 @@
             align-items: center;
             padding: 20px;
             min-height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         }
         #loginScreen:not(.active) { display: none; }
         #loginScreen.active { display: flex; }
         
         .login-box {
-            background: #112240;
-            border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 16px;
+            background: #fff;
+            border-radius: 20px;
             padding: 48px 40px;
             width: 100%;
             max-width: 420px;
-            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5);
+            box-shadow: 0 25px 60px rgba(0,0,0,0.15);
         }
         
         .login-logo { text-align: center; margin-bottom: 32px; }
         .login-logo .icon { font-size: 56px; }
-        .login-logo h1 { font-size: 28px; color: #0a8f7c; margin-top: 8px; }
-        .login-logo p { color: #8892b0; font-size: 14px; margin-top: 4px; }
+        .login-logo h1 { font-size: 28px; color: #667eea; margin-top: 8px; }
+        .login-logo p { color: #666; font-size: 14px; margin-top: 4px; }
         
         .input-group { margin-bottom: 20px; }
-        .input-group label { display: block; font-size: 13px; font-weight: 600; color: #8892b0; margin-bottom: 6px; }
+        .input-group label { display: block; font-size: 13px; font-weight: 600; color: #555; margin-bottom: 6px; }
         .input-wrap { position: relative; }
         .input-wrap input {
-            width: 100%; padding: 14px 16px; background: rgba(255,255,255,0.05);
-            border: 1px solid rgba(255,255,255,0.1); border-radius: 10px;
-            color: #e6f1ff; font-size: 16px; outline: none;
+            width: 100%; padding: 14px 16px; background: #f8f9fa;
+            border: 2px solid #e9ecef; border-radius: 10px;
+            color: #333; font-size: 16px; outline: none; transition: 0.2s;
         }
-        .input-wrap input:focus { border-color: #0a8f7c; }
+        .input-wrap input:focus { border-color: #667eea; background: #fff; }
         .toggle-pw {
             position: absolute; right: 14px; top: 50%; transform: translateY(-50%);
-            background: none; border: none; color: #5a6480; cursor: pointer; font-size: 20px;
+            background: none; border: none; color: #999; cursor: pointer; font-size: 20px;
         }
         
         .login-error { color: #e74c3c; font-size: 13px; margin-bottom: 12px; display: none; text-align: center; }
         
         .btn-primary {
-            width: 100%; padding: 16px; background: #0a8f7c; border: none;
-            border-radius: 10px; color: #fff; font-size: 16px; font-weight: 700;
+            width: 100%; padding: 16px; background: linear-gradient(135deg, #667eea, #764ba2);
+            border: none; border-radius: 10px; color: #fff; font-size: 16px; font-weight: 700;
             cursor: pointer; transition: 0.3s;
         }
-        .btn-primary:hover { background: #066b5c; }
-        .btn-primary.small { padding: 10px 24px; width: auto; }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(102,126,234,0.4); }
         
-        /* ===== DASHBOARD ===== */
+        /* ===== TOPBAR ===== */
         .topbar {
             display: flex; justify-content: space-between; align-items: center;
-            padding: 16px 32px; background: #112240;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
+            padding: 14px 32px; background: #fff;
+            border-bottom: 1px solid #e9ecef;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
         }
-        .topbar .brand { display: flex; align-items: center; gap: 12px; }
-        .topbar .brand .icon { font-size: 28px; }
-        .topbar .brand h2 { font-size: 20px; color: #0a8f7c; }
+        .topbar .brand { display: flex; align-items: center; gap: 10px; }
+        .topbar .brand .icon { font-size: 26px; }
+        .topbar .brand h2 { font-size: 20px; background: linear-gradient(135deg, #667eea, #764ba2); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
         .topbar .right { display: flex; align-items: center; gap: 16px; }
         .topbar .right .avatar {
-            width: 40px; height: 40px; border-radius: 50%;
-            background: linear-gradient(135deg, #0a8f7c, #f0a500);
+            width: 38px; height: 38px; border-radius: 50%;
+            background: linear-gradient(135deg, #667eea, #764ba2);
             display: flex; align-items: center; justify-content: center;
-            font-weight: 700; color: #fff;
+            font-weight: 700; color: #fff; font-size: 16px;
         }
-        .topbar .right .uname { font-weight: 600; font-size: 14px; color: #8892b0; }
+        .topbar .right .uname { font-weight: 600; font-size: 14px; color: #666; }
         .btn-logout {
-            padding: 8px 18px; background: rgba(231,76,60,0.15);
-            border: 1px solid rgba(231,76,60,0.3); border-radius: 8px;
-            color: #e74c3c; cursor: pointer; font-weight: 600; font-size: 13px;
+            padding: 8px 18px; background: #fff;
+            border: 2px solid #e74c3c; border-radius: 8px;
+            color: #e74c3c; cursor: pointer; font-weight: 600; font-size: 13px; transition: 0.2s;
         }
-        .btn-logout:hover { background: rgba(231,76,60,0.25); }
+        .btn-logout:hover { background: #e74c3c; color: #fff; }
         
+        /* ===== DASHBOARD ===== */
         .dash-content { padding: 32px; max-width: 1200px; margin: 0 auto; }
         
         .welcome-banner {
-            background: linear-gradient(135deg, rgba(10,143,124,0.12), rgba(240,165,0,0.08));
-            border: 1px solid rgba(255,255,255,0.1); border-radius: 16px;
-            padding: 32px 40px; margin-bottom: 32px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 20px;
+            padding: 36px 40px; margin-bottom: 32px; color: #fff;
         }
-        .welcome-banner h1 { font-size: 28px; margin-bottom: 8px; }
-        .welcome-banner h1 span { color: #f0a500; }
-        .welcome-banner p { color: #8892b0; font-size: 15px; line-height: 1.6; }
+        .welcome-banner h1 { font-size: 28px; margin-bottom: 6px; }
+        .welcome-banner h1 span { color: #ffd700; }
+        .welcome-banner p { opacity: 0.9; font-size: 15px; line-height: 1.6; }
         
-        .stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 32px; }
-        .stat-card {
-            background: #112240; border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 10px; padding: 20px 24px;
-        }
-        .stat-card .icon { font-size: 28px; margin-bottom: 6px; }
-        .stat-card .val { font-size: 24px; font-weight: 800; }
-        .stat-card .lbl { color: #8892b0; font-size: 13px; margin-top: 2px; }
-        
-        .section-title { font-size: 20px; margin-bottom: 16px; display: flex; align-items: center; gap: 10px; }
+        .section-title { font-size: 20px; margin-bottom: 16px; display: flex; align-items: center; gap: 10px; color: #333; }
         
         .tips-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-bottom: 32px; }
         .tip-card {
-            background: #112240; border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 10px; padding: 20px;
+            background: #fff; border: 1px solid #e9ecef;
+            border-radius: 14px; padding: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.04);
         }
         .tip-card .icon { font-size: 24px; margin-bottom: 8px; }
-        .tip-card h4 { font-size: 15px; margin-bottom: 4px; }
-        .tip-card p { color: #8892b0; font-size: 13px; line-height: 1.5; }
+        .tip-card h4 { font-size: 15px; margin-bottom: 4px; color: #333; }
+        .tip-card p { color: #666; font-size: 13px; line-height: 1.5; }
         
         .test-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px; margin-bottom: 32px; }
         .test-card {
-            background: #112240; border: 1px solid rgba(255,255,255,0.1);
+            background: #fff; border: 1px solid #e9ecef;
             border-radius: 16px; padding: 28px 20px; text-align: center;
-            cursor: pointer; transition: 0.3s;
+            cursor: pointer; transition: 0.3s; box-shadow: 0 2px 8px rgba(0,0,0,0.04);
         }
-        .test-card:hover { transform: translateY(-4px); box-shadow: 0 12px 24px -8px rgba(0,0,0,0.4); }
+        .test-card:hover { transform: translateY(-4px); box-shadow: 0 12px 30px rgba(0,0,0,0.1); border-color: #667eea; }
         .test-card .t-icon { font-size: 40px; margin-bottom: 12px; }
-        .test-card h3 { font-size: 17px; margin-bottom: 4px; }
-        .test-card p { color: #8892b0; font-size: 13px; margin-bottom: 12px; }
+        .test-card h3 { font-size: 17px; margin-bottom: 4px; color: #333; }
+        .test-card p { color: #666; font-size: 13px; margin-bottom: 12px; }
         .test-card .badge {
             display: inline-block; padding: 4px 14px; border-radius: 20px;
             font-size: 12px; font-weight: 600;
         }
-        .badge-bio { background: rgba(39,174,96,0.2); color: #2ecc71; }
-        .badge-chem { background: rgba(52,152,219,0.2); color: #3498db; }
-        .badge-phy { background: rgba(155,89,182,0.2); color: #9b59b6; }
-        .badge-eng { background: rgba(241,196,15,0.2); color: #f1c40f; }
-        .badge-lr { background: rgba(230,126,34,0.2); color: #e67e22; }
-        .badge-grand { background: linear-gradient(135deg, rgba(240,165,0,0.3), rgba(10,143,124,0.3)); color: #f0a500; }
-        
-        .test-card.biology { border-left: 4px solid #2ecc71; }
-        .test-card.chemistry { border-left: 4px solid #3498db; }
-        .test-card.physics { border-left: 4px solid #9b59b6; }
-        .test-card.english { border-left: 4px solid #f1c40f; }
-        .test-card.logical { border-left: 4px solid #e67e22; }
+        .badge-bio { background: #e8f5e9; color: #2e7d32; }
+        .badge-chem { background: #e3f2fd; color: #1565c0; }
+        .badge-phy { background: #f3e5f5; color: #7b1fa2; }
+        .badge-eng { background: #fff8e1; color: #f57f17; }
+        .badge-lr { background: #fbe9e7; color: #d84315; }
+        .badge-grand { background: linear-gradient(135deg, #e8eaf6, #f3e5f5); color: #5e35b1; }
         
         /* ===== TEST SCREEN ===== */
         .test-topbar {
             display: flex; justify-content: space-between; align-items: center;
-            padding: 12px 32px; background: #112240;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
-            position: sticky; top: 0; z-index: 10;
+            padding: 12px 24px; background: #fff;
+            border-bottom: 1px solid #e9ecef;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+            position: fixed; top: 0; left: 0; right: 0; z-index: 100; height: 60px;
         }
-        .test-topbar .left { display: flex; align-items: center; gap: 16px; }
-        .test-topbar .left h2 { font-size: 18px; color: #0a8f7c; }
+        .test-topbar .left { display: flex; align-items: center; gap: 12px; }
+        .test-topbar .left h2 { font-size: 17px; color: #333; }
         .test-topbar .left .back-btn {
-            background: none; border: 1px solid rgba(255,255,255,0.2);
-            color: #8892b0; padding: 6px 14px; border-radius: 8px;
-            cursor: pointer; font-size: 13px;
+            background: #f8f9fa; border: 1px solid #e9ecef;
+            color: #555; padding: 6px 14px; border-radius: 8px;
+            cursor: pointer; font-size: 13px; transition: 0.2s;
         }
-        .test-topbar .left .back-btn:hover { background: rgba(255,255,255,0.05); }
+        .test-topbar .left .back-btn:hover { background: #e9ecef; }
         .test-topbar .center { text-align: center; }
-        .test-topbar .center .test-name { font-size: 15px; font-weight: 600; }
-        .test-topbar .center .q-counter { font-size: 13px; color: #8892b0; }
+        .test-topbar .center .test-name { font-size: 14px; font-weight: 600; color: #333; }
+        .test-topbar .center .q-counter { font-size: 12px; color: #666; }
         .test-topbar .right .timer {
-            font-size: 22px; font-weight: 800; color: #f0a500;
+            font-size: 20px; font-weight: 700; color: #667eea;
             font-family: 'Courier New', monospace;
         }
         .test-topbar .right .timer.warning { color: #e74c3c; animation: pulse 1s infinite; }
         @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.5; } }
         
         .test-body {
-            display: flex; max-width: 1400px; margin: 0 auto; padding: 20px 32px;
-            gap: 24px; min-height: calc(100vh - 70px);
+            padding: 80px 24px 90px 24px;
+            max-width: 1100px; margin: 0 auto;
+        }
+        
+        /* Progress bar */
+        .progress-container {
+            background: #e9ecef; border-radius: 10px; height: 8px;
+            margin-bottom: 20px; overflow: hidden;
+        }
+        .progress-fill {
+            height: 100%; background: linear-gradient(90deg, #667eea, #764ba2);
+            border-radius: 10px; transition: width 0.4s ease;
+        }
+        .progress-text {
+            font-size: 13px; color: #666; margin-bottom: 16px; text-align: right;
         }
         
         .question-area {
-            flex: 1; background: #112240; border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 16px; padding: 32px;
+            background: #fff; border: 1px solid #e9ecef;
+            border-radius: 16px; padding: 28px; margin-bottom: 16px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
         }
         .q-number {
-            display: inline-block; background: #0a8f7c; color: #fff;
-            padding: 6px 18px; border-radius: 20px; font-size: 13px; font-weight: 700;
-            margin-bottom: 20px;
+            display: inline-block; background: linear-gradient(135deg, #667eea, #764ba2);
+            color: #fff; padding: 4px 16px; border-radius: 20px;
+            font-size: 12px; font-weight: 700; margin-bottom: 16px;
         }
         .q-text {
-            font-size: 18px; line-height: 1.7; margin-bottom: 28px;
+            font-size: 17px; line-height: 1.7; margin-bottom: 24px; color: #333;
         }
-        .options { display: flex; flex-direction: column; gap: 12px; }
+        .options { display: flex; flex-direction: column; gap: 10px; }
         .option-label {
-            display: flex; align-items: center; gap: 14px;
-            padding: 14px 20px; background: rgba(255,255,255,0.03);
-            border: 1px solid rgba(255,255,255,0.08); border-radius: 12px;
+            display: flex; align-items: center; gap: 12px;
+            padding: 14px 18px; background: #f8f9fa;
+            border: 2px solid transparent; border-radius: 12px;
             cursor: pointer; transition: 0.2s;
         }
-        .option-label:hover { background: rgba(10,143,124,0.08); border-color: #0a8f7c; }
+        .option-label:hover { background: #eef0ff; border-color: #c8d0f8; }
         .option-label input[type="radio"] {
             appearance: none; width: 20px; height: 20px;
-            border: 2px solid #5a6480; border-radius: 50%;
+            border: 2px solid #ccc; border-radius: 50%;
             position: relative; cursor: pointer; flex-shrink: 0;
         }
-        .option-label input[type="radio"]:checked { border-color: #0a8f7c; }
+        .option-label input[type="radio"]:checked { border-color: #667eea; }
         .option-label input[type="radio"]:checked::after {
             content: ''; position: absolute; width: 10px; height: 10px;
-            background: #0a8f7c; border-radius: 50%;
+            background: #667eea; border-radius: 50%;
             top: 50%; left: 50%; transform: translate(-50%, -50%);
         }
         .option-label .opt-letter {
-            font-weight: 700; color: #8892b0; font-size: 14px;
+            font-weight: 700; color: #667eea; font-size: 14px;
         }
-        .option-label.selected { border-color: #0a8f7c; background: rgba(10,143,124,0.1); }
+        .option-label.selected { background: #eef0ff; border-color: #667eea; }
         
-        .nav-area {
-            width: 260px; flex-shrink: 0;
+        /* Fixed bottom bar */
+        .bottom-bar {
+            position: fixed; bottom: 0; left: 0; right: 0;
+            background: #fff; border-top: 1px solid #e9ecef;
+            padding: 12px 24px; display: flex; justify-content: center; align-items: center;
+            gap: 12px; z-index: 100; box-shadow: 0 -4px 16px rgba(0,0,0,0.06);
         }
-        .nav-panel {
-            background: #112240; border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 16px; padding: 20px; position: sticky; top: 90px;
+        .bottom-bar-inner {
+            display: flex; align-items: center; gap: 12px;
+            width: 100%; max-width: 1100px; justify-content: space-between;
         }
-        .nav-panel h4 { font-size: 14px; color: #8892b0; margin-bottom: 14px; }
-        .q-grid {
-            display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px;
-            margin-bottom: 16px;
+        .bottom-bar .q-nav-btn {
+            padding: 12px 32px; border-radius: 10px;
+            font-size: 15px; font-weight: 700; cursor: pointer; border: none;
+            transition: 0.2s;
         }
-        .q-grid button {
-            aspect-ratio: 1; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1);
-            background: rgba(255,255,255,0.03); color: #8892b0;
-            font-size: 13px; font-weight: 600; cursor: pointer; transition: 0.2s;
+        .btn-prev { background: #f8f9fa; color: #555; border: 2px solid #e9ecef; }
+        .btn-prev:hover { background: #e9ecef; }
+        .btn-next { background: linear-gradient(135deg, #667eea, #764ba2); color: #fff; }
+        .btn-next:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(102,126,234,0.4); }
+        .btn-submit-bottom {
+            padding: 12px 28px; background: #e74c3c; color: #fff;
+            border: none; border-radius: 10px; font-size: 15px; font-weight: 700;
+            cursor: pointer; transition: 0.2s;
         }
-        .q-grid button:hover { border-color: #0a8f7c; }
-        .q-grid button.answered { background: #0a8f7c; color: #fff; border-color: #0a8f7c; }
-        .q-grid button.current { border-color: #f0a500; box-shadow: 0 0 0 2px rgba(240,165,0,0.3); }
-        .q-grid button.review { background: #e67e22; color: #fff; border-color: #e67e22; }
-
-        .legend { font-size: 12px; color: #8892b0; display: flex; flex-wrap: wrap; gap: 12px; }
-        .legend-item { display: flex; align-items: center; }
-        .legend-item .dot {
-            width: 14px; height: 14px; border-radius: 4px; margin-right: 6px;
-            background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1);
+        .btn-submit-bottom:hover { background: #c0392b; }
+        
+        /* Question navigator mini */
+        .mini-nav {
+            display: flex; align-items: center; gap: 8px;
         }
-        .legend-item .dot.answered { background: #0a8f7c; }
-        .legend-item .dot.current { border-color: #f0a500; box-shadow: 0 0 0 2px rgba(240,165,0,0.3); }
-
-        .nav-actions { margin-top: 16px; display: flex; gap: 8px; }
-        .nav-actions button {
-            flex: 1; padding: 10px; border-radius: 8px;
-            font-size: 13px; font-weight: 600; cursor: pointer; border: none;
+        .mini-nav .nav-dot {
+            width: 10px; height: 10px; border-radius: 50%;
+            background: #e9ecef; cursor: pointer; transition: 0.2s; border: none; padding: 0;
         }
-        .btn-prev { background: rgba(255,255,255,0.05); color: #e6f1ff; }
-        .btn-prev:hover { background: rgba(255,255,255,0.1); }
-        .btn-next { background: #0a8f7c; color: #fff; }
-        .btn-next:hover { background: #066b5c; }
-        .btn-submit {
-            width: 100%; margin-top: 10px; padding: 12px;
-            background: #e74c3c; color: #fff; border: none; border-radius: 8px;
-            font-size: 14px; font-weight: 700; cursor: pointer;
-        }
-        .btn-submit:hover { background: #c0392b; }
-        .btn-submit:disabled { background: #5a6480; cursor: not-allowed; }
-
+        .mini-nav .nav-dot.answered { background: #667eea; }
+        .mini-nav .nav-dot.current { background: #764ba2; transform: scale(1.4); }
+        .mini-nav .nav-dot:hover { transform: scale(1.2); }
+        .mini-nav span { font-size: 12px; color: #999; }
+        
         /* ===== RESULTS SCREEN ===== */
-        .results-container {
-            max-width: 800px; margin: 0 auto; padding: 32px;
+        .results-container { max-width: 900px; margin: 0 auto; padding: 32px 24px 100px; }
+        
+        .result-summary {
+            background: #fff; border-radius: 20px; padding: 32px;
+            text-align: center; box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+            border: 1px solid #e9ecef; margin-bottom: 24px;
         }
-        .result-card {
-            background: #112240; border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 20px; padding: 40px; text-align: center;
+        .result-summary .big-score {
+            font-size: 56px; font-weight: 800;
         }
-        .result-card .big-score {
-            font-size: 64px; font-weight: 800;
+        .result-summary .big-score.pass { color: #2ecc71; }
+        .result-summary .big-score.fail { color: #e74c3c; }
+        .result-summary .score-label { color: #666; font-size: 14px; margin-bottom: 20px; }
+        
+        .result-breakdown {
+            display: flex; justify-content: center; gap: 40px; margin: 20px 0;
         }
-        .result-card .big-score.pass { color: #2ecc71; }
-        .result-card .big-score.fail { color: #e74c3c; }
-        .result-card .score-label { color: #8892b0; font-size: 14px; }
-        .score-breakdown {
-            display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;
-            margin: 32px 0;
-        }
-        .score-item {
-            background: rgba(255,255,255,0.03); border-radius: 12px;
-            padding: 16px;
-        }
-        .score-item .num { font-size: 28px; font-weight: 700; }
-        .score-item .lbl { color: #8892b0; font-size: 12px; margin-top: 2px; }
-        .score-item.correct .num { color: #2ecc71; }
-        .score-item.wrong .num { color: #e74c3c; }
-        .score-item.skipped .num { color: #f39c12; }
+        .result-breakdown .item { text-align: center; }
+        .result-breakdown .item .num { font-size: 28px; font-weight: 700; }
+        .result-breakdown .item .lbl { color: #666; font-size: 13px; margin-top: 2px; }
+        .result-breakdown .item.correct .num { color: #2ecc71; }
+        .result-breakdown .item.wrong .num { color: #e74c3c; }
+        .result-breakdown .item.skipped .num { color: #f39c12; }
+        
         .btn-back-dash {
-            padding: 14px 36px; background: #0a8f7c; color: #fff;
-            border: none; border-radius: 10px; font-size: 16px; font-weight: 700;
-            cursor: pointer; margin-top: 20px;
+            padding: 14px 40px; background: linear-gradient(135deg, #667eea, #764ba2);
+            color: #fff; border: none; border-radius: 12px;
+            font-size: 16px; font-weight: 700; cursor: pointer; transition: 0.2s;
+            margin-top: 10px;
         }
-        .btn-back-dash:hover { background: #066b5c; }
-
+        .btn-back-dash:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(102,126,234,0.4); }
+        
+        /* Question review cards */
+        .review-title { 
+            font-size: 20px; margin: 32px 0 16px; color: #333;
+            display: flex; align-items: center; gap: 10px;
+        }
+        .review-filters {
+            display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap;
+        }
+        .review-filters button {
+            padding: 8px 18px; border-radius: 20px; border: 2px solid #e9ecef;
+            background: #fff; cursor: pointer; font-size: 13px; font-weight: 600;
+            transition: 0.2s; color: #555;
+        }
+        .review-filters button:hover { border-color: #667eea; }
+        .review-filters button.active { 
+            background: #667eea; color: #fff; border-color: #667eea;
+        }
+        .review-filters button.correct-filter { border-color: #2ecc71; color: #2ecc71; }
+        .review-filters button.correct-filter.active { background: #2ecc71; color: #fff; }
+        .review-filters button.wrong-filter { border-color: #e74c3c; color: #e74c3c; }
+        .review-filters button.wrong-filter.active { background: #e74c3c; color: #fff; }
+        
+        .review-card {
+            background: #fff; border-radius: 14px; padding: 20px 24px;
+            margin-bottom: 12px; border: 1px solid #e9ecef;
+            transition: 0.2s; box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+        }
+        .review-card:hover { border-color: #c8d0f8; }
+        .review-card .q-header {
+            display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;
+        }
+        .review-card .q-header .q-num {
+            font-weight: 700; font-size: 13px; color: #667eea;
+        }
+        .review-card .q-header .status-badge {
+            padding: 3px 12px; border-radius: 12px; font-size: 11px; font-weight: 700;
+        }
+        .status-badge.correct { background: #e8f5e9; color: #2e7d32; }
+        .status-badge.wrong { background: #ffebee; color: #c62828; }
+        .status-badge.skipped { background: #fff8e1; color: #f57f17; }
+        
+        .review-card .q-text { font-size: 15px; color: #333; margin-bottom: 10px; }
+        .review-card .options-row {
+            display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 10px;
+        }
+        .review-card .options-row .opt-tag {
+            padding: 4px 12px; border-radius: 6px; font-size: 12px; font-weight: 600;
+            background: #f8f9fa; border: 1px solid #e9ecef;
+        }
+        .review-card .options-row .opt-tag.correct-opt { background: #e8f5e9; border-color: #2ecc71; color: #2e7d32; }
+        .review-card .options-row .opt-tag.wrong-opt { background: #ffebee; border-color: #e74c3c; color: #c62828; }
+        .review-card .options-row .opt-tag.user-opt { border-style: dashed; }
+        
+        .review-card .explanation-box {
+            background: #f0f4ff; border-left: 4px solid #667eea;
+            padding: 12px 16px; border-radius: 0 8px 8px 0; margin-top: 10px;
+            font-size: 13px; color: #444; line-height: 1.6;
+        }
+        .review-card .explanation-box strong { color: #667eea; }
+        
         @media (max-width: 768px) {
-            .stats-row { grid-template-columns: repeat(2, 1fr); }
             .tips-grid { grid-template-columns: 1fr; }
             .test-grid { grid-template-columns: repeat(2, 1fr); }
             .dash-content { padding: 16px; }
             .topbar { padding: 12px 16px; }
-            .test-body { flex-direction: column; padding: 16px; }
-            .nav-area { width: 100%; }
-            .nav-panel { position: static; }
-            .test-topbar { flex-wrap: wrap; gap: 8px; padding: 12px 16px; }
-            .test-topbar .left h2 { font-size: 15px; }
-            .results-container { padding: 16px; }
-            .score-breakdown { grid-template-columns: 1fr; }
-            .result-card { padding: 24px; }
+            .test-topbar { padding: 10px 16px; height: 56px; }
+            .test-topbar .left h2 { font-size: 14px; }
+            .test-body { padding: 72px 16px 80px; }
+            .bottom-bar { padding: 10px 16px; }
+            .bottom-bar-inner { gap: 8px; flex-wrap: wrap; justify-content: center; }
+            .bottom-bar .q-nav-btn { padding: 10px 20px; font-size: 13px; }
+            .mini-nav { display: none; }
+            .result-breakdown { gap: 20px; }
+            .review-filters { gap: 6px; }
+            .review-filters button { font-size: 12px; padding: 6px 14px; }
+            .timer { font-size: 16px; }
         }
     </style>
 </head>
@@ -354,31 +411,8 @@
 
         <div class="dash-content">
             <div class="welcome-banner">
-                <h1>Welcome, <span id="welcomeName">Student</span>! 🩺</h1>
+                <h1>Welcome, <span id="welcomeName">Student</span>!</h1>
                 <p>Your comprehensive MDCAT preparation platform. Track progress, practice subject-wise tests, and attempt full-length grand tests.</p>
-            </div>
-
-            <div class="stats-row">
-                <div class="stat-card">
-                    <div class="icon">📊</div>
-                    <div class="val" id="statTests">0</div>
-                    <div class="lbl">Tests Taken</div>
-                </div>
-                <div class="stat-card">
-                    <div class="icon">🎯</div>
-                    <div class="val" id="statAvg">0%</div>
-                    <div class="lbl">Average Score</div>
-                </div>
-                <div class="stat-card">
-                    <div class="icon">⏱️</div>
-                    <div class="val">180</div>
-                    <div class="lbl">Total MCQs</div>
-                </div>
-                <div class="stat-card">
-                    <div class="icon">🏆</div>
-                    <div class="val" id="statBest">0%</div>
-                    <div class="lbl">Best Score</div>
-                </div>
             </div>
 
             <div class="section-title">💡 MDCAT Success Tips</div>
@@ -398,7 +432,7 @@
             </div>
             <div class="center">
                 <div class="test-name" id="testSubtitle">Subject Test</div>
-                <div class="q-counter" id="qCounter">Question 1 of 100</div>
+                <div class="q-counter" id="qCounter">1 / 10</div>
             </div>
             <div class="right">
                 <div class="timer" id="timer">01:30:00</div>
@@ -406,25 +440,31 @@
         </div>
 
         <div class="test-body">
+            <!-- Progress bar -->
+            <div class="progress-container">
+                <div class="progress-fill" id="progressFill" style="width:0%"></div>
+            </div>
+            <div class="progress-text" id="progressText">0% Complete</div>
+
             <div class="question-area">
                 <div class="q-number" id="qNumBadge">Q1</div>
                 <div class="q-text" id="qText">Loading question...</div>
                 <div class="options" id="optionsContainer"></div>
             </div>
-            <div class="nav-area">
-                <div class="nav-panel">
-                    <h4>Question Navigator</h4>
-                    <div class="q-grid" id="qGrid"></div>
-                    <div class="legend">
-                        <span class="legend-item"><span class="dot answered"></span>Answered</span>
-                        <span class="legend-item"><span class="dot current"></span>Current</span>
-                        <span class="legend-item"><span class="dot"></span>Unanswered</span>
-                    </div>
-                    <div class="nav-actions">
-                        <button class="btn-prev" id="prevBtn">← Prev</button>
-                        <button class="btn-next" id="nextBtn">Next →</button>
-                    </div>
-                    <button class="btn-submit" id="submitTestBtn">Submit Test</button>
+        </div>
+
+        <!-- Fixed Bottom Bar -->
+        <div class="bottom-bar">
+            <div class="bottom-bar-inner">
+                <button class="q-nav-btn btn-prev" id="prevBtn">← Previous</button>
+                
+                <div class="mini-nav">
+                    <span id="miniCounter">1 / 10</span>
+                </div>
+                
+                <div style="display:flex;gap:8px;">
+                    <button class="q-nav-btn btn-next" id="nextBtn">Next →</button>
+                    <button class="btn-submit-bottom" id="submitTestBtn">Submit</button>
                 </div>
             </div>
         </div>
@@ -442,27 +482,39 @@
                 <div class="avatar" id="resultsAvatar">U</div>
             </div>
         </div>
+
         <div class="results-container">
-            <div class="result-card">
-                <h2 style="margin-bottom:8px;color:#8892b0;font-size:14px;text-transform:uppercase;letter-spacing:2px;" id="resultTestName">Test Result</h2>
+            <div class="result-summary">
+                <h3 id="resultTestName" style="color:#666;font-size:14px;text-transform:uppercase;letter-spacing:2px;margin-bottom:8px;">Test Result</h3>
                 <div class="big-score pass" id="resultScore">0%</div>
                 <div class="score-label" id="resultLabel">Excellent!</div>
-                <div class="score-breakdown">
-                    <div class="score-item correct">
+                
+                <div class="result-breakdown">
+                    <div class="item correct">
                         <div class="num" id="resultCorrect">0</div>
-                        <div class="lbl">Correct</div>
+                        <div class="lbl">✓ Correct</div>
                     </div>
-                    <div class="score-item wrong">
+                    <div class="item wrong">
                         <div class="num" id="resultWrong">0</div>
-                        <div class="lbl">Wrong</div>
+                        <div class="lbl">✗ Wrong</div>
                     </div>
-                    <div class="score-item skipped">
+                    <div class="item skipped">
                         <div class="num" id="resultSkipped">0</div>
-                        <div class="lbl">Skipped</div>
+                        <div class="lbl">— Skipped</div>
                     </div>
                 </div>
+                
                 <button class="btn-back-dash" id="backToDashBtn">← Back to Dashboard</button>
             </div>
+
+            <div class="review-title">📝 Question Review</div>
+            <div class="review-filters">
+                <button class="active" data-filter="all">All</button>
+                <button class="correct-filter" data-filter="correct">✓ Correct</button>
+                <button class="wrong-filter" data-filter="wrong">✗ Wrong</button>
+                <button data-filter="skipped">— Skipped</button>
+            </div>
+            <div id="reviewList"></div>
         </div>
     </div>
 
@@ -478,7 +530,7 @@
             { id: 'grand2', label: 'Grand Test 2', icon: '🏆', badge: 'Full Syllabus • 180 MCQs', cls: 'badge-grand', time: 12600 }
         ];
 
-        const LETTERS = ['A', 'B', 'C', 'D', 'E'];
+        const LETTERS = ['A', 'B', 'C', 'D', 'E', 'F'];
 
         // ===== STATE =====
         const USERS = {
@@ -489,12 +541,13 @@
 
         let currentUser = null;
         let testHistory = JSON.parse(localStorage.getItem('mdcat_history') || '[]');
-        let currentTest = null;        // test config object
-        let questions = [];            // current test questions
-        let answers = [];              // selected answer INDEX for each question (0-based)
-        let currentQ = 0;             // 0-indexed
+        let currentTest = null;
+        let questions = [];
+        let answers = [];
+        let currentQ = 0;
         let timerInterval = null;
         let timeRemaining = 0;
+        let reviewFilter = 'all';
 
         // ===== SCREEN MANAGEMENT =====
         function showScreen(id) {
@@ -535,19 +588,9 @@
             showScreen('dashboardScreen');
             document.getElementById('dashName').textContent = currentUser.name;
             document.getElementById('welcomeName').textContent = currentUser.name.split(' ')[0];
-            document.getElementById('dashAvatar').textContent = currentUser.name.charAt(0);
-            updateStats();
+            document.getElementById('dashAvatar').textContent = currentUser.name.charAt(0).toUpperCase();
             renderTips();
             renderTests();
-        }
-
-        function updateStats() {
-            var total = testHistory.length;
-            var avg = total > 0 ? Math.round(testHistory.reduce(function(s, t) { return s + t.percentage; }, 0) / total) : 0;
-            var best = total > 0 ? Math.max.apply(null, testHistory.map(function(t) { return t.percentage; })) : 0;
-            document.getElementById('statTests').textContent = total;
-            document.getElementById('statAvg').textContent = avg + '%';
-            document.getElementById('statBest').textContent = best + '%';
         }
 
         function renderTips() {
@@ -574,7 +617,7 @@
             var html = '';
             for (var i = 0; i < TESTS.length; i++) {
                 var t = TESTS[i];
-                html += '<div class="test-card ' + (t.id.startsWith('grand') ? '' : t.id) + '" data-test-id="' + t.id + '">' +
+                html += '<div class="test-card" data-test-id="' + t.id + '">' +
                     '<div class="t-icon">' + t.icon + '</div>' +
                     '<h3>' + t.label + '</h3>' +
                     '<p>' + (t.id.startsWith('grand') ? '3.5 hours' : '1.5 hours') + '</p>' +
@@ -583,7 +626,6 @@
             }
             document.getElementById('testGrid').innerHTML = html;
 
-            // Attach click handlers
             document.querySelectorAll('.test-card').forEach(function(el) {
                 el.addEventListener('click', function() {
                     var id = this.getAttribute('data-test-id');
@@ -601,58 +643,51 @@
 
         // ===== TEST ENGINE =====
         function getQuestionsForTest(testId) {
-            // Grand tests use a special builder function from questions.js
             if ((testId === 'grand1' || testId === 'grand2') && typeof window.getGrandTestQuestionsImpl === 'function') {
                 return window.getGrandTestQuestionsImpl(testId);
             }
             
-            // Subject tests: load from MCQ_DATA
             if (window.MCQ_DATA && window.MCQ_DATA[testId]) {
                 var pool = window.MCQ_DATA[testId];
-                // Return ALL questions from the pool (up to a reasonable cap)
-                var maxQ = testId.startsWith('grand') ? 180 : pool.length;
+                var maxQ = testId.startsWith('grand') ? 180 : Math.min(pool.length, 100);
                 var qs = [];
-                for (var i = 0; i < Math.min(maxQ, pool.length); i++) {
+                for (var i = 0; i < maxQ; i++) {
                     var src = pool[i];
-                    // Normalize: questions.js uses { text, options: [...], answer: index }
-                    // Convert to our internal format
                     qs.push({
                         id: testId + '_q' + (i + 1),
                         question: src.text || src.question || 'Question #' + (i + 1),
-                        options: src.options || ['A', 'B', 'C', 'D', 'E'],
-                        answer: src.answer !== undefined ? src.answer : 0,  // index-based
+                        options: src.options || ['A', 'B', 'C', 'D'],
+                        answer: src.answer !== undefined ? src.answer : 0,
+                        explanation: src.explanation || 'The correct answer is option ' + LETTERS[src.answer] + '.',
                         subject: src.subject || testId
                     });
                 }
                 return qs;
             }
             
-            // Fallback: sample questions
-            var totalQ = 10;
             var qs = [];
-            for (var i = 0; i < totalQ; i++) {
+            for (var i = 0; i < 10; i++) {
                 qs.push({
                     id: testId + '_q' + (i + 1),
-                    question: 'Sample ' + testId + ' question #' + (i + 1),
+                    question: 'Sample question #' + (i + 1) + ' for ' + testId,
                     options: ['Option A', 'Option B', 'Option C', 'Option D'],
-                    answer: 0
+                    answer: 0,
+                    explanation: 'The correct answer is Option A.'
                 });
             }
             return qs;
         }
 
         function startTest(testId) {
-            // Find test config
             var config = null;
             for (var i = 0; i < TESTS.length; i++) {
                 if (TESTS[i].id === testId) { config = TESTS[i]; break; }
             }
             if (!config) { alert('Test not found!'); return; }
 
-            // Load questions
             var qs = getQuestionsForTest(testId);
             if (!qs || qs.length === 0) {
-                alert('No questions available for this test. Make sure questions.js is loaded correctly.');
+                alert('No questions available. Make sure questions.js is loaded.');
                 return;
             }
 
@@ -662,13 +697,12 @@
             currentQ = 0;
             timeRemaining = config.time;
 
-            // UI setup
             document.getElementById('testScreenName').textContent = config.label;
             document.getElementById('testSubtitle').textContent = config.id.startsWith('grand') ? 'Full Syllabus Test' : 'Subject Test';
 
             showScreen('testScreen');
             renderQuestion();
-            renderGrid();
+            updateProgress();
             startTimer();
         }
 
@@ -676,9 +710,11 @@
             var q = questions[currentQ];
             if (!q) return;
 
+            var total = questions.length;
             document.getElementById('qNumBadge').textContent = 'Q' + (currentQ + 1);
             document.getElementById('qText').textContent = q.question;
-            document.getElementById('qCounter').textContent = 'Question ' + (currentQ + 1) + ' of ' + questions.length;
+            document.getElementById('qCounter').textContent = (currentQ + 1) + ' / ' + total;
+            document.getElementById('miniCounter').textContent = (currentQ + 1) + ' / ' + total;
 
             var optsHtml = '';
             var opts = q.options || [];
@@ -693,51 +729,39 @@
             }
             document.getElementById('optionsContainer').innerHTML = optsHtml;
 
-            // Attach change listeners
             document.querySelectorAll('input[name="qoption"]').forEach(function(el) {
                 el.addEventListener('change', function() {
                     answers[currentQ] = parseInt(this.value);
-                    // Update styling
                     document.querySelectorAll('.option-label').forEach(function(lbl) {
                         lbl.classList.remove('selected');
                     });
                     this.closest('.option-label').classList.add('selected');
-                    renderGrid();
+                    updateProgress();
                 });
             });
+
+            // Update button states
+            document.getElementById('prevBtn').style.visibility = currentQ > 0 ? 'visible' : 'hidden';
+            document.getElementById('nextBtn').textContent = currentQ < total - 1 ? 'Next →' : 'Finish →';
         }
 
-        function renderGrid() {
-            var html = '';
-            for (var i = 0; i < questions.length; i++) {
-                var cls = '';
-                if (answers[i] !== null) { cls = 'answered'; }
-                if (i === currentQ) { cls += ' current'; }
-                html += '<button class="' + cls + '" data-qidx="' + i + '">' + (i + 1) + '</button>';
-            }
-            document.getElementById('qGrid').innerHTML = html;
-
-            // Attach click handlers
-            document.querySelectorAll('.q-grid button').forEach(function(el) {
-                el.addEventListener('click', function() {
-                    var idx = parseInt(this.getAttribute('data-qidx'));
-                    currentQ = idx;
-                    renderQuestion();
-                    renderGrid();
-                });
-            });
+        function updateProgress() {
+            var answered = answers.filter(function(a) { return a !== null; }).length;
+            var total = questions.length;
+            var pct = Math.round((answered / total) * 100);
+            document.getElementById('progressFill').style.width = pct + '%';
+            document.getElementById('progressText').textContent = pct + '% Complete (' + answered + '/' + total + ')';
         }
 
         function startTimer() {
             if (timerInterval) clearInterval(timerInterval);
-            var timerEl = document.getElementById('timer');
             
             timerInterval = setInterval(function() {
                 timeRemaining--;
                 if (timeRemaining <= 0) {
                     clearInterval(timerInterval);
                     timerInterval = null;
-                    submitTest(true); // auto-submit
+                    submitTest(true);
                     return;
                 }
                 updateTimerDisplay();
@@ -759,40 +783,50 @@
             timerEl.classList.toggle('warning', timeRemaining < 120);
         }
 
-        // Navigation buttons
+        // Navigation
         document.getElementById('prevBtn').addEventListener('click', function() {
-            if (currentQ > 0) { currentQ--; renderQuestion(); renderGrid(); }
+            if (currentQ > 0) { currentQ--; renderQuestion(); }
         });
 
         document.getElementById('nextBtn').addEventListener('click', function() {
-            if (currentQ < questions.length - 1) { currentQ++; renderQuestion(); renderGrid(); }
+            if (currentQ < questions.length - 1) {
+                currentQ++;
+                renderQuestion();
+            } else {
+                // Last question - prompt submit
+                var answered = answers.filter(function(a) { return a !== null; }).length;
+                var total = questions.length;
+                if (answered < total) {
+                    if (confirm(answered + '/' + total + ' answered. Submit test?')) submitTest(false);
+                } else {
+                    if (confirm('All done! Submit test?')) submitTest(false);
+                }
+            }
         });
 
-        // Keyboard nav
-        document.addEventListener('keydown', function(e) {
-            if (!document.getElementById('testScreen').classList.contains('active')) return;
-            if (e.key === 'ArrowLeft') { document.getElementById('prevBtn').click(); e.preventDefault(); }
-            if (e.key === 'ArrowRight') { document.getElementById('nextBtn').click(); e.preventDefault(); }
+        document.getElementById('submitTestBtn').addEventListener('click', function() {
+            var answered = answers.filter(function(a) { return a !== null; }).length;
+            var total = questions.length;
+            if (answered < total) {
+                if (!confirm(answered + '/' + total + ' answered (' + (total - answered) + ' skipped). Submit anyway?')) return;
+            } else {
+                if (!confirm('All ' + total + ' questions answered. Submit?')) return;
+            }
+            submitTest(false);
         });
 
-        // Exit test
         document.getElementById('exitTestBtn').addEventListener('click', function() {
-            if (confirm('Are you sure you want to exit? Your progress will not be saved.')) {
+            if (confirm('Exit test? Progress will not be saved.')) {
                 if (timerInterval) { clearInterval(timerInterval); timerInterval = null; }
                 enterDashboard();
             }
         });
 
-        // Submit test
-        document.getElementById('submitTestBtn').addEventListener('click', function() {
-            var answered = answers.filter(function(a) { return a !== null; }).length;
-            var total = questions.length;
-            if (answered < total) {
-                if (!confirm(answered + ' of ' + total + ' questions answered (' + (total - answered) + ' skipped). Submit anyway?')) return;
-            } else {
-                if (!confirm('All questions answered. Submit test?')) return;
-            }
-            submitTest(false);
+        // Keyboard
+        document.addEventListener('keydown', function(e) {
+            if (!document.getElementById('testScreen').classList.contains('active')) return;
+            if (e.key === 'ArrowLeft') { document.getElementById('prevBtn').click(); e.preventDefault(); }
+            if (e.key === 'ArrowRight') { document.getElementById('nextBtn').click(); e.preventDefault(); }
         });
 
         function submitTest(auto) {
@@ -815,7 +849,6 @@
             var total = questions.length;
             var percentage = Math.round((correct / total) * 100);
 
-            // Save to history
             testHistory.push({
                 date: new Date().toISOString(),
                 testName: currentTest.label,
@@ -828,7 +861,17 @@
             });
             localStorage.setItem('mdcat_history', JSON.stringify(testHistory));
 
-            // Show results
+            // Store for review
+            window._reviewData = {
+                questions: questions,
+                answers: answers.slice(),
+                correct: correct,
+                wrong: wrong,
+                skipped: skipped,
+                total: total,
+                percentage: percentage
+            };
+
             showResults(currentTest.label, correct, wrong, skipped, total, percentage);
         }
 
@@ -850,17 +893,87 @@
             document.getElementById('resultSkipped').textContent = skipped;
 
             document.getElementById('resultsUserName').textContent = currentUser.name;
-            document.getElementById('resultsAvatar').textContent = currentUser.name.charAt(0);
+            document.getElementById('resultsAvatar').textContent = currentUser.name.charAt(0).toUpperCase();
 
+            reviewFilter = 'all';
+            renderReview();
+            setupReviewFilters();
             showScreen('resultsScreen');
+        }
+
+        function renderReview() {
+            var rd = window._reviewData;
+            if (!rd) return;
+
+            var html = '';
+            var filtered = [];
+
+            for (var i = 0; i < rd.questions.length; i++) {
+                var q = rd.questions[i];
+                var isCorrect = (rd.answers[i] !== null && rd.answers[i] === q.answer);
+                var isWrong = (rd.answers[i] !== null && rd.answers[i] !== q.answer);
+                var isSkipped = (rd.answers[i] === null || rd.answers[i] === undefined);
+
+                if (reviewFilter === 'correct' && !isCorrect) continue;
+                if (reviewFilter === 'wrong' && !isWrong) continue;
+                if (reviewFilter === 'skipped' && !isSkipped) continue;
+
+                var status = isCorrect ? 'correct' : (isWrong ? 'wrong' : 'skipped');
+                var statusLabel = isCorrect ? '✓ Correct' : (isWrong ? '✗ Wrong' : '— Skipped');
+
+                // Build option tags
+                var optHtml = '';
+                for (var j = 0; j < q.options.length; j++) {
+                    var cls = 'opt-tag';
+                    if (j === q.answer) cls += ' correct-opt';
+                    if (rd.answers[i] === j && j !== q.answer) cls += ' wrong-opt';
+                    if (rd.answers[i] === j) cls += ' user-opt';
+                    var marker = '';
+                    if (j === q.answer) marker = ' ✓';
+                    if (rd.answers[i] === j && j !== q.answer) marker = ' ✗';
+                    optHtml += '<span class="' + cls + '">' + LETTERS[j] + '. ' + q.options[j] + marker + '</span>';
+                }
+
+                var explanationHtml = '';
+                if (q.explanation && (isWrong || isSkipped)) {
+                    explanationHtml = '<div class="explanation-box"><strong>Explanation:</strong> ' + q.explanation + '</div>';
+                }
+
+                html += '<div class="review-card">' +
+                    '<div class="q-header">' +
+                        '<span class="q-num">Q' + (i + 1) + ' of ' + rd.questions.length + '</span>' +
+                        '<span class="status-badge ' + status + '">' + statusLabel + '</span>' +
+                    '</div>' +
+                    '<div class="q-text">' + q.question + '</div>' +
+                    '<div class="options-row">' + optHtml + '</div>' +
+                    explanationHtml +
+                    '</div>';
+            }
+
+            if (!html) {
+                html = '<div style="text-align:center;padding:40px;color:#999;">No questions match this filter.</div>';
+            }
+
+            document.getElementById('reviewList').innerHTML = html;
+        }
+
+        function setupReviewFilters() {
+            var filterBtns = document.querySelectorAll('.review-filters button');
+            filterBtns.forEach(function(btn) {
+                btn.addEventListener('click', function() {
+                    filterBtns.forEach(function(b) { b.classList.remove('active'); });
+                    this.classList.add('active');
+                    reviewFilter = this.getAttribute('data-filter');
+                    renderReview();
+                });
+            });
         }
 
         document.getElementById('backToDashBtn').addEventListener('click', function() {
             enterDashboard();
         });
 
-        // ===== INIT =====
-        console.log('✅ MediTest Pro ready!');
+        console.log('✅ MediTest Pro - White Theme ready!');
     </script>
     <script src="questions.js"></script>
 </body>
